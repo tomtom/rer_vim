@@ -1,0 +1,11 @@
+{
+    "name" : "rer",
+    "version" : "dev",
+    "author" : "Tom Link <micathom at gmail com>",
+    "maintainer" : "Tom Link <micathom at gmail com>",
+    "repository" : {"type": "git", "url": "git://github.com/tomtom/rer_vim.git"},
+    "dependencies" : {
+    "rescreen": {"type": "git", "url": "git://github.com/tomtom/rescreen_vim.git"}
+  },
+    "description" : ""
+}
