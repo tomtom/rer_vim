@@ -1,0 +1,264 @@
+*rer.txt*       Interact with R via the rescreen vim plugin
+                Author: Thomas Link, micathom AT gmail com?subject=vim
+
+Features:
+
+    - Evaluate code via |rescreen.txt|
+    - Use K to get information on an identifier
+    - 'omnifunc' completion
+
+
+-----------------------------------------------------------------------
+Install~
+
+Edit the vba file and type: >
+
+    :so %
+
+See :help vimball for details. If you have difficulties or use vim 7.0, 
+please make sure, you have the current version of vimball (vimscript 
+#1502) installed or update your runtime.
+
+
+========================================================================
+Contents~
+
+        :Rer ............................. |:Rer|
+        g:rer#repl ....................... |g:rer#repl|
+        g:rer#repl_args .................. |g:rer#repl_args|
+        g:rer#save ....................... |g:rer#save|
+        g:rer#options .................... |g:rer#options|
+        rer#Keyword ...................... |rer#Keyword()|
+        rer#Inspect ...................... |rer#Inspect()|
+        rer#Complete ..................... |rer#Complete()|
+        rer#R_setwd ...................... |rer#R_setwd()|
+        rer#Cd ........................... |rer#Cd()|
+        rer#RVal ......................... |rer#RVal()|
+        rer#RDict ........................ |rer#RDict()|
+        g:rer#repl ....................... |g:rer#repl|
+        g:rer#repl_args .................. |g:rer#repl_args|
+        g:rer#save ....................... |g:rer#save|
+        g:rer#options .................... |g:rer#options|
+        rer#Keyword ...................... |rer#Keyword()|
+        rer#Inspect ...................... |rer#Inspect()|
+        rer#Complete ..................... |rer#Complete()|
+        rer#R_setwd ...................... |rer#R_setwd()|
+        rer#Cd ........................... |rer#Cd()|
+        rer#RVal ......................... |rer#RVal()|
+        rer#RDict ........................ |rer#RDict()|
+        prototype.ExitRepl
+        prototype.WrapResultPrinter
+        prototype.WrapResultWriter
+        rescreen#repl#rer#Extend ......... |rescreen#repl#rer#Extend()|
+        n_K .............................. |n_K|
+        n_<LocalLeader>K ................. |n_<LocalLeader>K|
+        :Rcd ............................. |:Rcd|
+
+
+========================================================================
+plugin/rer.vim~
+
+                                                    *:Rer*
+:Rer
+    Initiate an R |rescreen| session for the current buffer and setup some 
+    custom maps.
+
+
+========================================================================
+autoload/rer.vim~
+
+                                                    *g:rer#repl*
+g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
+
+                                                    *g:rer#repl_args*
+g:rer#repl_args                (default: '')
+
+                                                    *g:rer#save*
+g:rer#save                     (default: 1)
+    Values:
+        0 ... Don't save the image
+        1 ... Save an image only if a file .Rdata exists
+        2 ... Always save an image
+
+                                                    *g:rer#options*
+g:rer#options                  (default: {'features': ['history']})
+
+                                                    *rer#Keyword()*
+rer#Keyword(...)
+
+                                                    *rer#Inspect()*
+rer#Inspect(...)
+    Inspect the word under the cursor.
+
+                                                    *rer#Complete()*
+rer#Complete(findstart, base)
+    Omnicompletion for R.
+    See also 'omnifunc'.
+
+                                                    *rer#R_setwd()*
+rer#R_setwd(dict)
+
+                                                    *rer#Cd()*
+rer#Cd()
+
+                                                    *rer#RVal()*
+rer#RVal(value)
+
+                                                    *rer#RDict()*
+rer#RDict(dict)
+
+                                                    *g:rer#repl*
+g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
+
+                                                    *g:rer#repl_args*
+g:rer#repl_args                (default: '')
+
+                                                    *g:rer#save*
+g:rer#save                     (default: 1)
+    Values:
+        0 ... Don't save the image
+        1 ... Save an image only if a file .Rdata exists
+        2 ... Always save an image
+
+                                                    *g:rer#options*
+g:rer#options                  (default: {'features': ['history']})
+
+                                                    *rer#Keyword()*
+rer#Keyword(...)
+
+                                                    *rer#Inspect()*
+rer#Inspect(...)
+    Inspect the word under the cursor.
+
+                                                    *rer#Complete()*
+rer#Complete(findstart, base)
+    Omnicompletion for R.
+    See also 'omnifunc'.
+
+                                                    *rer#R_setwd()*
+rer#R_setwd(dict)
+
+                                                    *rer#Cd()*
+rer#Cd()
+
+                                                    *rer#RVal()*
+rer#RVal(value)
+
+                                                    *rer#RDict()*
+rer#RDict(dict)
+
+
+========================================================================
+autoload/rer.vim~
+
+                                                    *g:rer#repl*
+g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
+
+                                                    *g:rer#repl_args*
+g:rer#repl_args                (default: '')
+
+                                                    *g:rer#save*
+g:rer#save                     (default: 1)
+    Values:
+        0 ... Don't save the image
+        1 ... Save an image only if a file .Rdata exists
+        2 ... Always save an image
+
+                                                    *g:rer#options*
+g:rer#options                  (default: {'features': ['history']})
+
+                                                    *rer#Keyword()*
+rer#Keyword(...)
+
+                                                    *rer#Inspect()*
+rer#Inspect(...)
+    Inspect the word under the cursor.
+
+                                                    *rer#Complete()*
+rer#Complete(findstart, base)
+    Omnicompletion for R.
+    See also 'omnifunc'.
+
+                                                    *rer#R_setwd()*
+rer#R_setwd(dict)
+
+                                                    *rer#Cd()*
+rer#Cd()
+
+                                                    *rer#RVal()*
+rer#RVal(value)
+
+                                                    *rer#RDict()*
+rer#RDict(dict)
+
+                                                    *g:rer#repl*
+g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
+
+                                                    *g:rer#repl_args*
+g:rer#repl_args                (default: '')
+
+                                                    *g:rer#save*
+g:rer#save                     (default: 1)
+    Values:
+        0 ... Don't save the image
+        1 ... Save an image only if a file .Rdata exists
+        2 ... Always save an image
+
+                                                    *g:rer#options*
+g:rer#options                  (default: {'features': ['history']})
+
+                                                    *rer#Keyword()*
+rer#Keyword(...)
+
+                                                    *rer#Inspect()*
+rer#Inspect(...)
+    Inspect the word under the cursor.
+
+                                                    *rer#Complete()*
+rer#Complete(findstart, base)
+    Omnicompletion for R.
+    See also 'omnifunc'.
+
+                                                    *rer#R_setwd()*
+rer#R_setwd(dict)
+
+                                                    *rer#Cd()*
+rer#Cd()
+
+                                                    *rer#RVal()*
+rer#RVal(value)
+
+                                                    *rer#RDict()*
+rer#RDict(dict)
+
+
+========================================================================
+autoload/rescreen/repl/rer.vim~
+
+prototype.ExitRepl
+
+prototype.WrapResultPrinter
+
+prototype.WrapResultWriter
+
+                                                    *rescreen#repl#rer#Extend()*
+rescreen#repl#rer#Extend(dict)
+
+
+========================================================================
+ftplugin/r/rer.vim~
+
+                                                    *n_K*
+n_K ... :call rer#Keyword()<cr>
+    See |rer#Keyword()| and |K|.
+
+                                                    *n_<LocalLeader>K*
+n_<LocalLeader>K ... :call rer#Inspect()<cr>
+    Inspect an R object -- see |rer#Inspect()|.
+
+                                                    *:Rcd*
+:Rcd
+
+
+
+vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
