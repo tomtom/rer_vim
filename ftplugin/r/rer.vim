@@ -1,13 +1,13 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    9
+" @Revision:    10
 
 if exists('b:did_rer')
     finish
 endif
 
 
-Rescreen r
+Rescreen rer
 
 
 if empty(&omnifunc)
