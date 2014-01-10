@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    75
+" @Revision:    76
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
@@ -29,15 +29,6 @@ function! s:prototype.WrapResultWriter(input, xtempfile) dict "{{{3
                 \     escape(a:xtempfile, '"\'))
                 \ )
     return input
-endf
-
-
-function! s:SourceBuffer(bufnr) "{{{3
-    if !&modified && !empty(bufname(a:bufnr)) && getbufvar(a:bufnr, '&ft') == 'r' && getbufvar(a:bufnr, '&buftype') !~ 'nofile'
-        let filename = rer#Filename(fnamemodify(bufname(a:bufnr), ':p'), b:rer)
-        let r = printf('source(%s)', rer#ArgumentString(filename))
-        call rescreen#Send(r, 'rer')
-    endif
 endf
 
 
