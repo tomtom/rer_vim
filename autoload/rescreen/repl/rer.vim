@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    70
+" @Revision:    75
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
@@ -17,14 +17,17 @@ endf
 
 function! s:prototype.WrapResultPrinter(input) dict "{{{3
     let input = a:input
-    " <+BODY+>
+    call add(input, 'print(.Last.value)')
     return input
 endf
 
 
 function! s:prototype.WrapResultWriter(input, xtempfile) dict "{{{3
     let input = a:input
-    " <+BODY+>
+    call add(input,
+                \ printf('writeLines(as.character(.Last.value), con = "%s")',
+                \     escape(a:xtempfile, '"\'))
+                \ )
     return input
 endf
 
