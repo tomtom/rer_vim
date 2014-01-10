@@ -23,5 +23,8 @@ See :help vimball for details. If you have difficulties or use vim 7.0,
 please make sure, you have the current version of vimball (vimscript 
 #1502) installed or update your runtime.
 
+This plugin requires the rescreen vim plugin to be installed 
+(https://github.com/tomtom/rescreen_vim).
+
 
 %s
