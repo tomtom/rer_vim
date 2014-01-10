@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    22
+" @Revision:    29
 
 if exists('b:did_rer')
     finish
@@ -22,10 +22,23 @@ nnoremap <buffer> K :call rer#Keyword()<cr>
 nnoremap <buffer> <LocalLeader>K :call rer#Inspect()<cr>
 
 
-exec 'nnoremap <buffer> '. g:rer#mapleader .'d :call rer#Debug(expand("<cword>"))<cr>'
-exec 'vnoremap <buffer> '. g:rer#mapleader .'d ""p:call rer#Debug(@")<cr>'
+if !empty(g:rer#mapleader)
 
-exec 'nnoremap <buffer> '. g:rer#mapleader .'s :call rer#SourceBuffer(bufnr("%"))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'d :call rer#Debug(expand("<cword>"))<cr>'
+    exec 'vnoremap <buffer> '. g:rer#mapleader .'d ""p:call rer#Debug(@")<cr>'
+
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'s :call rer#SourceBuffer(bufnr("%"))<cr>'
+
+endif
+
+
+if !empty(g:rer#map_eval_and_print)
+
+    exec 'nnoremap <buffer>' g:rer#map_eval_and_print ':call rescreen#Send(getline("."), "rer", "p")<cr>'
+    exec 'inoremap <buffer>' g:rer#map_eval_and_print '<c-\><c-o>:call rescreen#Send(getline("."), "rer", "p")<cr>'
+    exec 'xnoremap <buffer>' g:rer#map_eval_and_print ':call rescreen#Send(rescreen#GetSelection("v"), "rer", "p")<cr>'
+
+endif
 
 
 " Set R's working directory to the current buffer's directory.

@@ -1,11 +1,15 @@
-" rer.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    56
+" @Revision:    57
 
 
 if !exists('g:rer#mapleader')
     let g:rer#mapleader = g:rescreen#mapleader   "{{{2
+endif
+
+
+if !exists('g:rer#map_eval_and_print')
+    let g:rer#map_eval_and_print = '<c-s-cr>'   "{{{2
 endif
 
 
