@@ -48,7 +48,7 @@ if (!exists("rerComplete")) {
                 }),
             apropos(pattern)
         )
-        paste(completions, collapse = "\n")
+        invisible(paste(completions, collapse = "\n"))
     }
 }
 
