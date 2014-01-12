@@ -1,3 +1,16 @@
+Features:
+
+    - Evaluate code via |rescreen.txt|
+    - 'omnifunc' completion
+    - Use K to get information on an identifier
+    - Source the current buffer (nmap: gxs)
+    - Debug/Undebug a function (n/vmap: gxd)
+
+The map prefix (gx) is user-configurable via |g:rer#mapleader|.
+
+
+-----------------------------------------------------------------------
+
 Status:  Experimental
 Dependencies:
   rescreen :: http://github.com/tomtom/rescreen_vim
