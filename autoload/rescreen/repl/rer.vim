@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    76
+" @Revision:    82
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
@@ -40,17 +40,24 @@ function! rescreen#repl#rer#Extend(dict) "{{{3
     else
         let save = 0
     endif
+    let a:dict.shell = g:rer#shell
+    let a:dict.repl_convert_path = g:rer#convert_path
     let a:dict.repl = join([g:rer#repl, save ? ' --save' : ' --no-save', g:rer#repl_args])
     let a:dict.repl_handler = copy(s:prototype)
     let cd = rer#R_setwd(a:dict)
     " TLogVAR cd
     let r_lib = a:dict.Filename(simplify(s:sfile .'/../../rer/rer_vim.R'))
     " TLogVAR r_lib
-    let a:dict.repl_handler.initial_lines = [
+    let initial_lines = [
                 \ cd,
                 \ printf('rer.options <- %s', rer#RDict(g:rer#options)),
                 \ printf('source(%s)', rer#ArgumentString(r_lib)),
                 \ ]
+    if !empty(g:rer#r_options)
+        call insert(initial_lines, printf('options(%s)', g:rer#r_options))
+    endif
+    let a:dict.repl_handler.initial_lines = initial_lines
+    call rescreen#ChangeMapLeader(a:dict, g:rer#mapleader)
     let b:rer = a:dict
 endf
 

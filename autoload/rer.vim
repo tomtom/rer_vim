@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    57
+" @Revision:    64
 
 
 if !exists('g:rer#mapleader')
@@ -13,9 +13,19 @@ if !exists('g:rer#map_eval_and_print')
 endif
 
 
+if !exists('g:rer#convert_path')
+    let g:rer#convert_path = ''   "{{{2
+endif
+
+
 if !exists('g:rer#highlight_debug')
     " Highlight group for debugged functions.
     let g:rer#highlight_debug = 'SpellRare'   "{{{2
+endif
+
+
+if !exists('g:rer#shell')
+    let g:rer#shell = g:rescreen#shell   "{{{2
 endif
 
 
@@ -37,18 +47,17 @@ if !exists('g:rer#save')
 endif
 
 
-if !exists('g:rer#options')
-    let g:rer#options = {'features': ['history']}   "{{{2
+if !exists('g:rer#r_options')
+    " Options (as string) passed to R.
+    let g:rer#r_options = 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : '')   "{{{2
 endif
 
 
-" if !exists('g:rer#completion_type')
-"     " Template type for omni-completion.
-"     "
-"     " Allowed values (or empty):
-"     "   tskeleton ... Use the tskeleton vim plugin
-"     let g:rer#completion_type = exists('g:loaded_tskeleton') ? 'tskeleton' : ''  "{{{2
-" endif
+if !exists('g:rer#options')
+    " Define a feature set.
+    " :nodoc:
+    let g:rer#options = {'features': ['history']}   "{{{2
+endif
 
 
 " :nodoc:
@@ -93,28 +102,18 @@ endf
 
 " Omnicompletion for R.
 " See also 'omnifunc'.
-function! rer#Complete(findstart, base) "{{{3
+function! rer#Completions(base) "{{{3
     " TLogVAR a:findstart, a:base
-    if a:findstart
-        let line = getline('.')
-        let start = col('.') - 1
-        while start > 0 && line[start - 1] =~ '[._[:alnum:]]'
-            let start -= 1
-        endwhile
-        return start
-    else
-        let rescreen = rescreen#Init(1, {'repltype': 'rer'})
-        let r = printf('rerComplete(%s, %s)',
-                    \ rer#ArgumentString('^'. escape(a:base, '^$.*\[]~"')),
-                    \ rer#ArgumentString('')
-                    \ )
-                    " \ rer#ArgumentString(exists('w:tskeleton_hypererplete') ? 'tskeleton' : g:rer#completion_type)
-        let completions = rescreen.EvaluateInSession(r, 'r')
-        " TLogVAR completions
-        let clist = split(completions, '\n')
-        " TLogVAR clist
-        return clist
-    endif
+    let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+    let r = printf('rerComplete(%s, %s)',
+                \ rer#ArgumentString('^'. escape(a:base, '^$.*\[]~"')),
+                \ rer#ArgumentString('')
+                \ )
+    let completions = rescreen.EvaluateInSession(r, 'r')
+    " TLogVAR completions
+    let clist = split(completions, '\n')
+    " TLogVAR clist
+    return clist
 endf
 
 

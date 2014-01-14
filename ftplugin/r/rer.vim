@@ -1,17 +1,18 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    29
+" @Revision:    31
 
 if exists('b:did_rer')
     finish
 endif
 
 
-Rescreen rer
+Rescreen -default rer
 
 
 if empty(&omnifunc)
-    setlocal omnifunc=rer#Complete
+    let b:rescreen_completions='rer#Completions'
+    setlocal omnifunc=rescreen#Complete
 endif
 
 
