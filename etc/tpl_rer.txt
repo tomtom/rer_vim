@@ -3,9 +3,10 @@
 
 Features:
 
-    - Evaluate code via |rescreen.txt|
-    - 'omnifunc' completion
-    - Use K to get information on an identifier
+    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
+    - 'omnifunc' completion (|i_CTRL-X_CTRL-O|)
+    - Use |K| to display informatin on an identifier
+    - Show examples for the word under cursor (nmap: gxx)
     - Source the current buffer (nmap: gxs)
     - Debug/Undebug a function (n/vmap: gxd)
 

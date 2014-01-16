@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    64
+" @Revision:    90
 
 
 if !exists('g:rer#mapleader')
@@ -21,6 +21,12 @@ endif
 if !exists('g:rer#highlight_debug')
     " Highlight group for debugged functions.
     let g:rer#highlight_debug = 'SpellRare'   "{{{2
+endif
+
+
+if !exists('g:rer#highlight_breakpoint')
+    " Highlight group for breakpoint
+    let g:rer#highlight_breakpoint = 'SpellBad'   "{{{2
 endif
 
 
@@ -168,6 +174,7 @@ endf
 
 
 let s:debugged = []
+let s:breakpoints = {}
 
 " Toggle the debug status of a function.
 function! rer#Debug(fn) "{{{3
@@ -212,6 +219,7 @@ function! s:HighlightDebug() "{{{3
         syntax clear ReRDebug
     else
         exec 'hi def link ReRDebug' g:rer#highlight_debug
+        exec 'hi def link ReRBreakpoint' g:rer#highlight_breakpoint
         let s:hl_init = 1
     endif
     if !empty(s:debugged)
@@ -219,5 +227,32 @@ function! s:HighlightDebug() "{{{3
         " TLogVAR debugged
         exec 'syntax match ReRDebug /\V\<\('. join(debugged, '\|') .'\)\>/'
     endif
+    " for breakpoint in get(s:breakpoints, expand('%:p'), [])
+    "     exec 'syntax match ReRBreakpoint /^\%'. breakpoint .'l.*$/'
+    " endfor
 endf
+
+
+" function! rer#SetBreakpoint(filename, lnum) "{{{3
+"     if !has_key(s:breakpoints, a:filename)
+"         let s:breakpoints[a:filename] = []
+"     endif
+"     let breakpoints = s:breakpoints[a:filename]
+"     let lnumi = index(breakpoints, a:lnum)
+"     if lnumi == -1
+"         call add(breakpoints, a:lnum)
+"         echom "Add breakpoint"
+"         let clear = "FALSE"
+"     else
+"         call remove(breakpoints, lnumi)
+"         echom "Remove breakpoint"
+"         let clear = "TRUE"
+"     endif
+"     let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+"     let r = printf('setBreakpoint(%s, %s, clear = %s, nameonly = FALSE)',
+"                 \ string(escape(a:filename, '\"')), a:lnum, clear)
+"     call rescreen#Send(r, 'rer')
+"     let s:breakpoints[a:filename] = breakpoints
+"     call s:HighlightDebug()
+" endf
 
