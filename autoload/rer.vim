@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    104
+" @Revision:    105
 
 
 if !exists('g:rer#mapleader')
@@ -118,6 +118,7 @@ function! rer#Completions(base) "{{{3
     let completions = rescreen.EvaluateInSession(r, 'r')
     " TLogVAR completions
     let clist = split(completions, '\n')
+    let clist = sort(clist)
     " TLogVAR clist
     return clist
 endf
