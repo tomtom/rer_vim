@@ -3,9 +3,10 @@
 
 Features:
 
-    - Evaluate code via |rescreen.txt|
-    - 'omnifunc' completion
-    - Use K to get information on an identifier
+    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
+    - 'omnifunc' completion (|i_CTRL-X_CTRL-O|)
+    - Use |K| to display informatin on an identifier
+    - Show examples for the word under cursor (nmap: gxx)
     - Source the current buffer (nmap: gxs)
     - Debug/Undebug a function (n/vmap: gxd)
 
@@ -33,14 +34,17 @@ Contents~
         :Rer ............................. |:Rer|
         g:rer#mapleader .................. |g:rer#mapleader|
         g:rer#map_eval_and_print ......... |g:rer#map_eval_and_print|
+        g:rer#convert_path ............... |g:rer#convert_path|
         g:rer#highlight_debug ............ |g:rer#highlight_debug|
+        g:rer#highlight_breakpoint ....... |g:rer#highlight_breakpoint|
+        g:rer#shell ...................... |g:rer#shell|
         g:rer#repl ....................... |g:rer#repl|
         g:rer#repl_args .................. |g:rer#repl_args|
         g:rer#save ....................... |g:rer#save|
-        g:rer#options .................... |g:rer#options|
+        g:rer#r_options .................. |g:rer#r_options|
         rer#Keyword ...................... |rer#Keyword()|
         rer#Inspect ...................... |rer#Inspect()|
-        rer#Complete ..................... |rer#Complete()|
+        rer#Completions .................. |rer#Completions()|
         rer#R_setwd ...................... |rer#R_setwd()|
         rer#Cd ........................... |rer#Cd()|
         rer#RVal ......................... |rer#RVal()|
@@ -48,23 +52,8 @@ Contents~
         rer#SourceBuffer ................. |rer#SourceBuffer()|
         rer#Debug ........................ |rer#Debug()|
         rer#Undebug ...................... |rer#Undebug()|
-        g:rer#mapleader .................. |g:rer#mapleader|
-        g:rer#map_eval_and_print ......... |g:rer#map_eval_and_print|
-        g:rer#highlight_debug ............ |g:rer#highlight_debug|
-        g:rer#repl ....................... |g:rer#repl|
-        g:rer#repl_args .................. |g:rer#repl_args|
-        g:rer#save ....................... |g:rer#save|
-        g:rer#options .................... |g:rer#options|
-        rer#Keyword ...................... |rer#Keyword()|
-        rer#Inspect ...................... |rer#Inspect()|
-        rer#Complete ..................... |rer#Complete()|
-        rer#R_setwd ...................... |rer#R_setwd()|
-        rer#Cd ........................... |rer#Cd()|
-        rer#RVal ......................... |rer#RVal()|
-        rer#RDict ........................ |rer#RDict()|
-        rer#SourceBuffer ................. |rer#SourceBuffer()|
-        rer#Debug ........................ |rer#Debug()|
-        rer#Undebug ...................... |rer#Undebug()|
+        rer#GetBreakpointsAsQFL .......... |rer#GetBreakpointsAsQFL()|
+        rer#SetBreakpoint ................ |rer#SetBreakpoint()|
         prototype.ExitRepl
         prototype.WrapResultPrinter
         prototype.WrapResultWriter
@@ -94,9 +83,19 @@ g:rer#mapleader                (default: g:rescreen#mapleader)
                                                     *g:rer#map_eval_and_print*
 g:rer#map_eval_and_print       (default: '<c-s-cr>')
 
+                                                    *g:rer#convert_path*
+g:rer#convert_path             (default: '')
+
                                                     *g:rer#highlight_debug*
 g:rer#highlight_debug          (default: 'SpellRare')
     Highlight group for debugged functions.
+
+                                                    *g:rer#highlight_breakpoint*
+g:rer#highlight_breakpoint     (default: 'SpellBad')
+    Highlight group for breakpoint
+
+                                                    *g:rer#shell*
+g:rer#shell                    (default: g:rescreen#shell)
 
                                                     *g:rer#repl*
 g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
@@ -111,8 +110,9 @@ g:rer#save                     (default: 1)
         1 ... Save an image only if a file .Rdata exists
         2 ... Always save an image
 
-                                                    *g:rer#options*
-g:rer#options                  (default: {'features': ['history']})
+                                                    *g:rer#r_options*
+g:rer#r_options                (default: 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : ''))
+    Options (as string) passed to R.
 
                                                     *rer#Keyword()*
 rer#Keyword(...)
@@ -121,8 +121,8 @@ rer#Keyword(...)
 rer#Inspect(...)
     Inspect the word under the cursor.
 
-                                                    *rer#Complete()*
-rer#Complete(findstart, base)
+                                                    *rer#Completions()*
+rer#Completions(base)
     Omnicompletion for R.
     See also 'omnifunc'.
 
@@ -149,192 +149,11 @@ rer#Debug(fn)
 rer#Undebug(fn)
     Undebug a debugged function.
 
-                                                    *g:rer#mapleader*
-g:rer#mapleader                (default: g:rescreen#mapleader)
+                                                    *rer#GetBreakpointsAsQFL()*
+rer#GetBreakpointsAsQFL()
 
-                                                    *g:rer#map_eval_and_print*
-g:rer#map_eval_and_print       (default: '<c-s-cr>')
-
-                                                    *g:rer#highlight_debug*
-g:rer#highlight_debug          (default: 'SpellRare')
-    Highlight group for debugged functions.
-
-                                                    *g:rer#repl*
-g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
-
-                                                    *g:rer#repl_args*
-g:rer#repl_args                (default: '')
-
-                                                    *g:rer#save*
-g:rer#save                     (default: 1)
-    Values:
-        0 ... Don't save the image
-        1 ... Save an image only if a file .Rdata exists
-        2 ... Always save an image
-
-                                                    *g:rer#options*
-g:rer#options                  (default: {'features': ['history']})
-
-                                                    *rer#Keyword()*
-rer#Keyword(...)
-
-                                                    *rer#Inspect()*
-rer#Inspect(...)
-    Inspect the word under the cursor.
-
-                                                    *rer#Complete()*
-rer#Complete(findstart, base)
-    Omnicompletion for R.
-    See also 'omnifunc'.
-
-                                                    *rer#R_setwd()*
-rer#R_setwd(dict)
-
-                                                    *rer#Cd()*
-rer#Cd()
-
-                                                    *rer#RVal()*
-rer#RVal(value)
-
-                                                    *rer#RDict()*
-rer#RDict(dict)
-
-                                                    *rer#SourceBuffer()*
-rer#SourceBuffer(bufnr)
-
-                                                    *rer#Debug()*
-rer#Debug(fn)
-    Toggle the debug status of a function.
-
-                                                    *rer#Undebug()*
-rer#Undebug(fn)
-    Undebug a debugged function.
-
-
-========================================================================
-autoload/rer.vim~
-
-                                                    *g:rer#mapleader*
-g:rer#mapleader                (default: g:rescreen#mapleader)
-
-                                                    *g:rer#map_eval_and_print*
-g:rer#map_eval_and_print       (default: '<c-s-cr>')
-
-                                                    *g:rer#highlight_debug*
-g:rer#highlight_debug          (default: 'SpellRare')
-    Highlight group for debugged functions.
-
-                                                    *g:rer#repl*
-g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
-
-                                                    *g:rer#repl_args*
-g:rer#repl_args                (default: '')
-
-                                                    *g:rer#save*
-g:rer#save                     (default: 1)
-    Values:
-        0 ... Don't save the image
-        1 ... Save an image only if a file .Rdata exists
-        2 ... Always save an image
-
-                                                    *g:rer#options*
-g:rer#options                  (default: {'features': ['history']})
-
-                                                    *rer#Keyword()*
-rer#Keyword(...)
-
-                                                    *rer#Inspect()*
-rer#Inspect(...)
-    Inspect the word under the cursor.
-
-                                                    *rer#Complete()*
-rer#Complete(findstart, base)
-    Omnicompletion for R.
-    See also 'omnifunc'.
-
-                                                    *rer#R_setwd()*
-rer#R_setwd(dict)
-
-                                                    *rer#Cd()*
-rer#Cd()
-
-                                                    *rer#RVal()*
-rer#RVal(value)
-
-                                                    *rer#RDict()*
-rer#RDict(dict)
-
-                                                    *rer#SourceBuffer()*
-rer#SourceBuffer(bufnr)
-
-                                                    *rer#Debug()*
-rer#Debug(fn)
-    Toggle the debug status of a function.
-
-                                                    *rer#Undebug()*
-rer#Undebug(fn)
-    Undebug a debugged function.
-
-                                                    *g:rer#mapleader*
-g:rer#mapleader                (default: g:rescreen#mapleader)
-
-                                                    *g:rer#map_eval_and_print*
-g:rer#map_eval_and_print       (default: '<c-s-cr>')
-
-                                                    *g:rer#highlight_debug*
-g:rer#highlight_debug          (default: 'SpellRare')
-    Highlight group for debugged functions.
-
-                                                    *g:rer#repl*
-g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
-
-                                                    *g:rer#repl_args*
-g:rer#repl_args                (default: '')
-
-                                                    *g:rer#save*
-g:rer#save                     (default: 1)
-    Values:
-        0 ... Don't save the image
-        1 ... Save an image only if a file .Rdata exists
-        2 ... Always save an image
-
-                                                    *g:rer#options*
-g:rer#options                  (default: {'features': ['history']})
-
-                                                    *rer#Keyword()*
-rer#Keyword(...)
-
-                                                    *rer#Inspect()*
-rer#Inspect(...)
-    Inspect the word under the cursor.
-
-                                                    *rer#Complete()*
-rer#Complete(findstart, base)
-    Omnicompletion for R.
-    See also 'omnifunc'.
-
-                                                    *rer#R_setwd()*
-rer#R_setwd(dict)
-
-                                                    *rer#Cd()*
-rer#Cd()
-
-                                                    *rer#RVal()*
-rer#RVal(value)
-
-                                                    *rer#RDict()*
-rer#RDict(dict)
-
-                                                    *rer#SourceBuffer()*
-rer#SourceBuffer(bufnr)
-
-                                                    *rer#Debug()*
-rer#Debug(fn)
-    Toggle the debug status of a function.
-
-                                                    *rer#Undebug()*
-rer#Undebug(fn)
-    Undebug a debugged function.
+                                                    *rer#SetBreakpoint()*
+rer#SetBreakpoint(filename, lnum)
 
 
 ========================================================================
