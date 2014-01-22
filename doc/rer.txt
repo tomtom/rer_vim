@@ -27,11 +27,21 @@ please make sure, you have the current version of vimball (vimscript
 This plugin requires the rescreen vim plugin to be installed 
 (https://github.com/tomtom/rescreen_vim).
 
+Certain functions make use of the tlib vim plugin (vimscript #1863) if 
+available.
+
 
 ========================================================================
 Contents~
 
         :Rer ............................. |:Rer|
+        n_K .............................. |n_K|
+        n_<LocalLeader>K ................. |n_<LocalLeader>K|
+        :Rcd ............................. |:Rcd|
+        :Rsource ......................... |:Rsource|
+        :Rdebug .......................... |:Rdebug|
+        :RBreakpoint ..................... |:RBreakpoint|
+        :RResetBreakpoints ............... |:RResetBreakpoints|
         g:rer#mapleader .................. |g:rer#mapleader|
         g:rer#map_eval_and_print ......... |g:rer#map_eval_and_print|
         g:rer#convert_path ............... |g:rer#convert_path|
@@ -54,15 +64,11 @@ Contents~
         rer#Undebug ...................... |rer#Undebug()|
         rer#GetBreakpointsAsQFL .......... |rer#GetBreakpointsAsQFL()|
         rer#SetBreakpoint ................ |rer#SetBreakpoint()|
+        rer#ResetBreakpoints ............. |rer#ResetBreakpoints()|
         prototype.ExitRepl
         prototype.WrapResultPrinter
         prototype.WrapResultWriter
         rescreen#repl#rer#Extend ......... |rescreen#repl#rer#Extend()|
-        n_K .............................. |n_K|
-        n_<LocalLeader>K ................. |n_<LocalLeader>K|
-        :Rcd ............................. |:Rcd|
-        :Rsource ......................... |:Rsource|
-        :Rdebug .......................... |:Rdebug|
 
 
 ========================================================================
@@ -72,6 +78,38 @@ plugin/rer.vim~
 :Rer
     Initiate an R |rescreen| session for the current buffer and setup some 
     custom maps.
+
+
+========================================================================
+ftplugin/r/rer.vim~
+
+                                                    *n_K*
+n_K ... :call rer#Keyword()<cr>
+    See |rer#Keyword()| and |K|.
+
+                                                    *n_<LocalLeader>K*
+n_<LocalLeader>K ... :call rer#Inspect()<cr>
+    Inspect an R object -- see |rer#Inspect()|.
+
+                                                    *:Rcd*
+:Rcd
+    Set R's working directory to the current buffer's directory.
+
+                                                    *:Rsource*
+:Rsource
+    Source the current buffer in R.
+
+                                                    *:Rdebug*
+:Rdebug [FUNCTION]
+    Debug or undebug FUNCTION.
+
+                                                    *:RBreakpoint*
+RBreakpoint [FILENAME]
+    List and remove breakpoints.
+    If FILENAME is "%", the current buffer is used.
+
+                                                    *:RResetBreakpoints*
+:RResetBreakpoints
 
 
 ========================================================================
@@ -139,7 +177,7 @@ rer#RVal(value)
 rer#RDict(dict)
 
                                                     *rer#SourceBuffer()*
-rer#SourceBuffer(bufnr)
+rer#SourceBuffer(bufnr, ...)
 
                                                     *rer#Debug()*
 rer#Debug(fn)
@@ -153,7 +191,13 @@ rer#Undebug(fn)
 rer#GetBreakpointsAsQFL()
 
                                                     *rer#SetBreakpoint()*
-rer#SetBreakpoint(filename, lnum)
+rer#SetBreakpoint(filename, bplnums)
+    This function uses the basename of the filename argument. I.e. if you 
+    have more than one file with a given basename is loaded in R, trouble 
+    may follow.
+
+                                                    *rer#ResetBreakpoints()*
+rer#ResetBreakpoints()
 
 
 ========================================================================
@@ -167,30 +211,6 @@ prototype.WrapResultWriter
 
                                                     *rescreen#repl#rer#Extend()*
 rescreen#repl#rer#Extend(dict)
-
-
-========================================================================
-ftplugin/r/rer.vim~
-
-                                                    *n_K*
-n_K ... :call rer#Keyword()<cr>
-    See |rer#Keyword()| and |K|.
-
-                                                    *n_<LocalLeader>K*
-n_<LocalLeader>K ... :call rer#Inspect()<cr>
-    Inspect an R object -- see |rer#Inspect()|.
-
-                                                    *:Rcd*
-:Rcd
-    Set R's working directory to the current buffer's directory.
-
-                                                    *:Rsource*
-:Rsource
-    Source the current buffer in R.
-
-                                                    *:Rdebug*
-:Rdebug [FUNCTION]
-    Debug or undebug FUNCTION.
 
 
 
