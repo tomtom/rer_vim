@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    37
+" @Revision:    42
 
 if exists('b:did_rer')
     finish
@@ -31,7 +31,7 @@ if !empty(g:rer#mapleader)
     exec 'nnoremap <buffer> '. g:rer#mapleader .'s :call rer#SourceBuffer(bufnr("%"))<cr>'
 
     exec 'nnoremap <buffer> '. g:rer#mapleader .'x :call rescreen#Send("example(<c-r><c-w>)", "rer", "p")<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'b :call rer#SetBreakpoint(expand("%:p"), line("."))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'b :call rer#SetBreakpoint(expand("%:p"), [line(".")])<cr>'
 
 endif
 
@@ -54,6 +54,13 @@ command! -bang -buffer Rsource call rer#SourceBuffer(bufnr("%"))
 " :display: :Rdebug [FUNCTION]
 " Debug or undebug FUNCTION.
 command! -bang -buffer -nargs=? Rdebug call rer#Debug(<q-args>)
+
+" :display: RBreakpoint [FILENAME]
+" List and remove breakpoints.
+" If FILENAME is "%", the current buffer is used.
+command! -bang -buffer -nargs=? RBreakpoint call rer#SetBreakpoint(<q-args>, [])
+
+command! -bang -buffer RResetBreakpoints call rer#ResetBreakpoints()
 
 
 let b:did_rer = 1

@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    105
+" @Revision:    142
 
 
 if !exists('g:rer#mapleader')
@@ -165,11 +165,23 @@ function! rer#RDict(dict) "{{{3
 endf
 
 
-function! rer#SourceBuffer(bufnr) "{{{3
+function! rer#SourceBuffer(bufnr, ...) "{{{3
     if !&modified && !empty(bufname(a:bufnr)) && getbufvar(a:bufnr, '&ft') == 'r' && getbufvar(a:bufnr, '&buftype') !~ 'nofile'
-        let filename = rer#Filename(fnamemodify(bufname(a:bufnr), ':p'), b:rer)
-        let r = printf('source(%s)', rer#ArgumentString(filename))
-        call rescreen#Send(r, 'rer')
+        let filename = bufname(a:bufnr)
+        let filename = fnamemodify(filename, ':p')
+        if !empty(s:breakpoints)
+            echom "Source: Breakpoints could be obsolete now!"
+        endif
+        let filename = rer#Filename(filename, b:rer)
+        " if !has_key(b:rer, 'sourced_files')
+        "     let b:rer.sourced_files = {}
+        " endif
+        " let once = a:0 >= 1 ? a:1 : 0
+        " if !once || !has_key(b:rer.sourced_files, filename)
+            " let b:rer.sourced_files[filename] = 1
+            let r = printf('source(%s)', rer#ArgumentString(filename))
+            call rescreen#Send(r, 'rer')
+    "     endif
     endif
 endf
 
@@ -258,27 +270,69 @@ function! rer#GetBreakpointsAsQFL() "{{{3
 endf
 
 
-function! rer#SetBreakpoint(filename, lnum) "{{{3
-    let filename = fnamemodify(a:filename, ':t')
+" This function uses the basename of the filename argument. I.e. if you 
+" have more than one file with a given basename is loaded in R, trouble 
+" may follow.
+function! rer#SetBreakpoint(filename, bplnums) "{{{3
+    let filename = a:filename
+    let bplnums = a:bplnums
+    if empty(filename)
+        if exists('g:loaded_tlib')
+            let filename = tlib#input#List('s', 'Select filename:', keys(s:breakpoints))
+        endif
+    elseif filename == '%'
+        let filename = expand("%:p")
+    endif
+    if empty(filename)
+        throw "ReR: SetBreakpoint: Empty filename"
+    endif
+    " let filename = fnamemodify(filename, ':t')
+    let filename = fnamemodify(filename, ':p')
     if !has_key(s:breakpoints, filename)
-        let s:breakpoints[filename] = {'bufnr': bufnr(a:filename), 'lnums': []}
+        let s:breakpoints[filename] = {'bufnr': bufnr(filename), 'lnums': []}
     endif
     let lnums = s:breakpoints[filename].lnums
-    let lnumi = index(lnums, a:lnum)
-    if lnumi == -1
-        call add(lnums, a:lnum)
-        echom "Add breakpoint"
-        let clear = "FALSE"
-    else
-        call remove(lnums, lnumi)
-        echom "Remove breakpoint"
-        let clear = "TRUE"
+    if empty(bplnums)
+        if exists('g:loaded_tlib')
+            let bplnums = tlib#input#List('m', 'Select breakpoint:', lnums)
+            let bplnums = map(bplnums, 'str2nr(v:val, 10)')
+        endif
     endif
-    let rescreen = rescreen#Init(1, {'repltype': 'rer'})
-    let r = printf('setBreakpoint(%s, %s, clear = %s)',
-                \ string(escape(filename, '\"')), a:lnum, clear)
-    call rescreen#Send(r, 'rer')
-    let s:breakpoints[filename].lnums = lnums
-    call s:HighlightDebug()
+    let view = winsaveview()
+    try
+        let bufnr = bufnr(filename)
+        if bufnr != bufnr('%s')
+            exec 'buffer' bufnr
+        endif
+        for lnum in bplnums
+            let lnumi = index(lnums, lnum)
+            if lnumi == -1
+                let lnum = nextnonblank(lnum)
+                call add(lnums, lnum)
+                echom "Add breakpoint"
+                let clear = "FALSE"
+            else
+                call remove(lnums, lnumi)
+                echom "Remove breakpoint"
+                let clear = "TRUE"
+            endif
+            let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+            let r = printf('setBreakpoint(%s, %s, clear = %s, nameonly = FALSE)',
+                        \ string(escape(filename, '\"')), lnum, clear)
+            call rescreen#Send(r, 'rer')
+            let s:breakpoints[filename].lnums = lnums
+        endfor
+        call s:HighlightDebug()
+    finally
+        call winrestview(view)
+    endtry
+endf
+
+
+function! rer#ResetBreakpoints() "{{{3
+    for [filename, lnums] in items(s:breakpoints)
+        call rer#SetBreakpoint(filename, lnums)
+    endfor
+    let s:breakpoints = {}
 endf
 
