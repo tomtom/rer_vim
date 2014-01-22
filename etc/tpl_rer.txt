@@ -27,5 +27,8 @@ please make sure, you have the current version of vimball (vimscript
 This plugin requires the rescreen vim plugin to be installed 
 (https://github.com/tomtom/rescreen_vim).
 
+Certain functions make use of the tlib vim plugin (vimscript #1863) if 
+available.
+
 
 %s
