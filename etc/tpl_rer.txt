@@ -12,6 +12,10 @@ Features:
 
 The map prefix (gx) is user-configurable via |g:rer#mapleader|.
 
+This plugin was tested on Linux (Ubuntu) & Windows. On Windows, this plugin 
+assumes the use of the native Windows version of R (or rather Rterm) and of 
+the Cygwin port of the screen utility.
+
 
 -----------------------------------------------------------------------
 Install~
