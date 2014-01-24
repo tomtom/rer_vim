@@ -70,21 +70,65 @@ if (!exists("rerInspect.data.frame")) {
     rerInspect.data.frame <- fix
 }
 
+
 if (!exists("rerInspect.matrix")) {
     rerInspect.matrix <- fix
 }
+
 
 if (!exists("rerInspect.function")) {
     rerInspect.function <- fix
 }
 
+
 if (!exists("rerInspect.default")) {
     rerInspect.default <- if (exists('gvarbrowser')) gvarbrowser else str
 }
+
 
 if (!exists("rerInspect")) {
     rerInspect <- function(name) {
         UseMethod("rerInspect")
     }
 }
+
+
+if (!exists("rerSetBreakpoint")) {
+    rer.breakpoints <- list()
+    rer.breakpoints.nameonly <- FALSE
+    rerSetBreakpoint <- function(filename, lnum, clear = FALSE, nameonly = rer.breakpoints.nameonly, ...) {
+        bps <- rer.breakpoints[[filename]]
+        bps <- bps[bps != lnum]
+        if (!clear) {
+            bps <- c(bps, lnum)
+        }
+        rer.breakpoints[[filename]] <<- bps
+        setBreakpoint(filename, lnum, clear = clear, nameonly = nameonly, ...)
+    }
+}
+
+
+if (!exists("rerSource")) {
+    rerSource <- function(filename) {
+        env <- globalenv()
+        eval(substitute(source(f), list(f = filename)), envir = env)
+        for (filename in names(rer.breakpoints)) {
+            for (lnum in rer.breakpoints[[filename]]) {
+                eval(substitute({
+                    try(
+                        setBreakpoint(f, n, clear = TRUE, nameonly = rer.breakpoints.nameonly),
+                        silent = TRUE)
+                    try(
+                        setBreakpoint(f, n, nameonly = rer.breakpoints.nameonly),
+                        silent = TRUE)
+                }, list(
+                        f = filename,
+                        n = lnum)),
+                     envir = env)
+            }
+        }
+    }
+}
+
+
 

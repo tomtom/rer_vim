@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    142
+" @Revision:    150
 
 
 if !exists('g:rer#mapleader')
@@ -165,23 +165,23 @@ function! rer#RDict(dict) "{{{3
 endf
 
 
+" :display: rer#SourceBuffer(bufnr, ?nativeSource = FALSE)
 function! rer#SourceBuffer(bufnr, ...) "{{{3
-    if !&modified && !empty(bufname(a:bufnr)) && getbufvar(a:bufnr, '&ft') == 'r' && getbufvar(a:bufnr, '&buftype') !~ 'nofile'
+    if &modified
+        echohl WarningMsg
+        echom "Buffer was modified. Won't source a modified buffer."
+        echohl NONE
+    elseif empty(bufname(a:bufnr)) || getbufvar(a:bufnr, '&ft') != 'r' || getbufvar(a:bufnr, '&buftype') =~ 'nofile'
+        echohl WarningMsg
+        echom "Cannot source this buffer in R!"
+        echohl NONE
+    else
         let filename = bufname(a:bufnr)
         let filename = fnamemodify(filename, ':p')
-        if !empty(s:breakpoints)
-            echom "Source: Breakpoints could be obsolete now!"
-        endif
         let filename = rer#Filename(filename, b:rer)
-        " if !has_key(b:rer, 'sourced_files')
-        "     let b:rer.sourced_files = {}
-        " endif
-        " let once = a:0 >= 1 ? a:1 : 0
-        " if !once || !has_key(b:rer.sourced_files, filename)
-            " let b:rer.sourced_files[filename] = 1
-            let r = printf('source(%s)', rer#ArgumentString(filename))
-            call rescreen#Send(r, 'rer')
-    "     endif
+        let source = a:0 >= 1 && a:1 ? 'source' : 'rerSource'
+        let r = printf('%s(%s)', source, rer#ArgumentString(filename))
+        call rescreen#Send(r, 'rer')
     endif
 endf
 
@@ -317,7 +317,7 @@ function! rer#SetBreakpoint(filename, bplnums) "{{{3
                 let clear = "TRUE"
             endif
             let rescreen = rescreen#Init(1, {'repltype': 'rer'})
-            let r = printf('setBreakpoint(%s, %s, clear = %s, nameonly = FALSE)',
+            let r = printf('rerSetBreakpoint(%s, %s, clear = %s, nameonly = FALSE)',
                         \ string(escape(filename, '\"')), lnum, clear)
             call rescreen#Send(r, 'rer')
             let s:breakpoints[filename].lnums = lnums
