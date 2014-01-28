@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    150
+" @Revision:    214
 
 
 if !exists('g:rer#mapleader')
@@ -82,10 +82,15 @@ function! rer#ArgumentString(text) "{{{3
 endf
 
 
+function! s:IsKeyword(word) "{{{3
+    return a:word =~ '^\(if\|else\|repeat\|while\|function\|for\|in\|next\|break\|[[:punct:]]\)$'
+endf
+
+
 function! rer#Keyword(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
     " TLogVAR word
-    if word =~ '^\(if\|else\|repeat\|while\|function\|for\|in\|next\|break\|[[:punct:]]\)$'
+    if s:IsKeyword(word)
         let name = string(word)
         let namestring = '""'
     else
@@ -106,21 +111,71 @@ function! rer#Inspect(...) "{{{3
 endf
 
 
+function! s:GetFunctionOfWord(base, noKeywords) "{{{3
+    let line = getline('.')[0 : virtcol('.') - 1]
+    " let rx = '\V\(\k\+\)\ze\s\*(\[^)]\{-}\$'
+    let rx = '\V\(\[a-zA-Z0-9._]\+\)\ze\s\*(\[^()]\*\$'
+    let fn = matchstr(line, rx)
+    " TLogVAR a:base, line, fn
+    if a:noKeywords && !empty(fn) && s:IsKeyword(fn)
+        let fn = ''
+    endif
+    return fn
+endf
+
+
 " Omnicompletion for R.
 " See also 'omnifunc'.
-function! rer#Completions(base) "{{{3
-    " TLogVAR a:findstart, a:base
+function! rer#Completions(base, ...) "{{{3
+    let use_empty_base = a:0 >= 1 ? a:1 : exists('w:tskeleton_hypercomplete')
     let rescreen = rescreen#Init(1, {'repltype': 'rer'})
-    let r = printf('rerComplete(%s, %s)',
-                \ rer#ArgumentString('^'. escape(a:base, '^$.*\[]~"')),
-                \ rer#ArgumentString('')
-                \ )
-    let completions = rescreen.EvaluateInSession(r, 'r')
-    " TLogVAR completions
-    let clist = split(completions, '\n')
-    let clist = sort(clist)
-    " TLogVAR clist
+    let clist = []
+    let fn = s:GetFunctionOfWord(a:base, 1)
+    if !empty(fn)
+        if fn =~ '^\(options\)$'
+            let fn = string(fn)
+        endif
+        let r = printf('rerFormals(%s, names.only = TRUE)', fn)
+        let args = rescreen.EvaluateInSession(r, 'r')
+        if args !=# 'NULL'
+            let argslist = split(args, '\n')
+            let argslist = map(argslist, 'v:val == "..." ? v:val : v:val ." = "')
+            " TLogVAR args, argslist
+            let clist += argslist
+        endif
+    endif
+    if !empty(a:base) || use_empty_base
+        let r = printf('rerComplete(%s, %s)',
+                    \ rer#ArgumentString('^'. escape(a:base, '^$.*\[]~"')),
+                    \ rer#ArgumentString('')
+                    \ )
+        let completions = rescreen.EvaluateInSession(r, 'r')
+        " TLogVAR completions
+        if completions !=# 'NULL'
+            let clist += sort(split(completions, '\n'))
+        endif
+    endif
     return clist
+endf
+
+
+function! rer#FunctionArgs(word) "{{{3
+    if !empty(a:word) && !s:IsKeyword(a:word)
+        let fn = s:GetFunctionOfWord(a:word, 1)
+        " TLogVAR fn
+        if empty(fn)
+            let fn = "NULL"
+        endif
+        let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+        let r = printf('rerFunctionArgs(%s, %s)', a:word, fn)
+        " TLogVAR r
+        let val = rescreen.EvaluateInSession(r, 'r')
+        if !empty(val) && val != "NULL"
+            echohl Type
+            echo val
+            echohl NONE
+        endif
+    endif
 endf
 
 
