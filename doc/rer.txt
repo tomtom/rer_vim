@@ -4,11 +4,13 @@
 Features:
 
     - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
-    - 'omnifunc' completion (|i_CTRL-X_CTRL-O|)
+    - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
+      arguments)
     - Use |K| to display informatin on an identifier
     - Show examples for the word under cursor (nmap: gxx)
     - Source the current buffer (nmap: gxs)
     - Debug/Undebug a function (n/vmap: gxd)
+    - Display function arguments (n/vmap: gxf)
 
 The map prefix (gx) is user-configurable via |g:rer#mapleader|.
 
@@ -59,6 +61,7 @@ Contents~
         rer#Keyword ...................... |rer#Keyword()|
         rer#Inspect ...................... |rer#Inspect()|
         rer#Completions .................. |rer#Completions()|
+        rer#FunctionArgs ................. |rer#FunctionArgs()|
         rer#R_setwd ...................... |rer#R_setwd()|
         rer#Cd ........................... |rer#Cd()|
         rer#RVal ......................... |rer#RVal()|
@@ -164,9 +167,12 @@ rer#Inspect(...)
     Inspect the word under the cursor.
 
                                                     *rer#Completions()*
-rer#Completions(base)
+rer#Completions(base, ...)
     Omnicompletion for R.
     See also 'omnifunc'.
+
+                                                    *rer#FunctionArgs()*
+rer#FunctionArgs(word)
 
                                                     *rer#R_setwd()*
 rer#R_setwd(dict)
