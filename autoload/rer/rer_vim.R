@@ -93,6 +93,46 @@ if (!exists("rerFunctionArgs")) {
 }
 
 
+if (!exists("rerFormals")) {
+    rerFormals <- function(fn, names.only = FALSE) {
+        v <- if (is.function(fn) && !is.primitive(fn)) {
+            formals(fn)
+        } else if (fn == 'options') {
+            options()
+        } else {
+            NULL
+        }
+        invisible(if (names.only) {
+            names(v)
+        } else {
+            v
+        })
+    }
+}
+
+
+if (!exists("rerFunctionArgs")) {
+
+    rerFunctionArgs <- function(fn, fn1 = NULL) {
+        fn.name <- as.character(as.list(match.call())$fn)
+        if (exists(fn.name) && is.function(fn) && !is.primitive(fn)) {
+            v <- withVisible(args(fn))
+            vargs <- as.character(v)[1]
+            vargs <- sub("\\s*\\nNULL$", "", vargs)
+            vargs <- sub("\\n", "", vargs)
+            vargs <- sub("^function", fn.name, vargs)
+            invisible(vargs)
+        } else if (!is.null(fn1)) {
+            fn.alt <- as.list(match.call())$fn1
+            eval(substitute(rerFunctionArgs(fn), list(fn = fn.alt)))
+        } else {
+            invisible(NULL)
+        }
+    }
+
+}
+
+
 if (!exists("rerKeyword")) {
     rerKeyword <- function(name, name.string) {
         if (name.string == '') {
