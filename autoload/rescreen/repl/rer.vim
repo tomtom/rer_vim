@@ -22,12 +22,26 @@ function! s:prototype.WrapResultPrinter(input) dict "{{{3
 endf
 
 
+function! s:prototype.SetTempFile(input, xtempfile) dict "{{{3
+    if !has_key(self.rescreen.done, 'set_rer_tempfile')
+        call insert(a:input, printf('rer.tempfile <- %s', rer#ArgumentString(a:xtempfile)))
+        let self.rescreen.done.set_rer_tempfile = 1
+    endif
+    return a:input
+endf
+
+
 function! s:prototype.WrapResultWriter(input, xtempfile) dict "{{{3
     let input = a:input
-    call add(input,
-                \ printf('writeLines(as.character(.Last.value), con = "%s")',
-                \     escape(a:xtempfile, '"\'))
-                \ )
+    if !empty(input)
+        let input[0] = 'rerWriteBack({'. input[0]
+        let input[-1] = input[-1] .'})'
+        let input = self.SetTempFile(input, a:xtempfile)
+    endif
+    " call add(input,
+    "             \ printf('writeLines(as.character(.Last.value), con = "%s")',
+    "             \     escape(a:xtempfile, '"\'))
+    "             \ )
     return input
 endf
 

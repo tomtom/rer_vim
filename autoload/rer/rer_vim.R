@@ -1,3 +1,6 @@
+if (!exists("rer.tempfile")) {
+    rer.tempfile <- NULL
+}
 
 
 rer.rdata <- paste(getwd(), '.rer.rdata', sep = '/')
@@ -17,6 +20,14 @@ if ('history' %in% rer.options$features) {
     }
 } else {
     rer.rhistory <- NULL
+}
+
+
+if (!exists("rerWriteBack")) {
+    rerWriteBack <- function(val = .Last.value, con = rer.tempfile) {
+        stopifnot(!is.null(con) && !con == '')
+        writeLines(as.character(val), con = con)
+    }
 }
 
 
