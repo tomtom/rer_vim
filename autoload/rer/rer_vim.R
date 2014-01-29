@@ -42,8 +42,8 @@ if (!exists("rerQuit")) {
 
 
 if (!exists("rerHelp")) {
-    rerHelp <- function(name.string) {
-        help((name.string), try.all.packages = TRUE)
+    rerHelp <- function(name.string, ...) {
+        help((name.string), try.all.packages = TRUE, ...)
     }
 }
 
