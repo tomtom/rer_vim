@@ -90,8 +90,15 @@ function! s:IsKeyword(word) "{{{3
 endf
 
 
+" :display: rer#Keyword(?word = "", ?help_type = "")
 function! rer#Keyword(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
+    let help_type = a:0 >= 2 ? a:2 : ''
+    " TLogVAR a:000, word, help_type
+    let etc = ''
+    if !empty(help_type)
+        let etc .= 'help_type = '. string(help_type)
+    endif
     " TLogVAR word
     if s:IsKeyword(word)
         let name = string(word)
@@ -100,7 +107,10 @@ function! rer#Keyword(...) "{{{3
         let name = word
         let namestring = string(word)
     endif
-    let r = printf('rerKeyword(%s, %s)', name, namestring)
+    if !empty(etc)
+        let etc = ', '. etc
+    endif
+    let r = printf('rerKeyword(%s, %s%s)', name, namestring, etc)
     call rescreen#Send(r, 'rer')
 endf
 

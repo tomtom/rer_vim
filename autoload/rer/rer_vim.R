@@ -134,11 +134,11 @@ if (!exists("rerFunctionArgs")) {
 
 
 if (!exists("rerKeyword")) {
-    rerKeyword <- function(name, name.string) {
+    rerKeyword <- function(name, name.string, ...) {
         if (name.string == '') {
-            rerHelp(name)
+            rerHelp(name, ...)
         } else if (mode(name) == 'function') {
-            rerHelp(name.string)
+            rerHelp(name.string, ...)
         } else {
             str(name)
         }
