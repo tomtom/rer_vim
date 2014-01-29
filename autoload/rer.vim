@@ -137,7 +137,14 @@ function! s:GetFunctionOfWord(base, noKeywords) "{{{3
 endf
 
 
+function! rer#CommandComplete(ArgLead, CmdLine, CursorPos) "{{{3
+    return rer#Completions(a:ArgLead)
+endf
+
+
 " Omnicompletion for R.
+" If the base pattern contains no period ".", matches with periods are 
+" removed from the list of possible completions.
 " See also 'omnifunc'.
 function! rer#Completions(base, ...) "{{{3
     let use_empty_base = a:0 >= 1 ? a:1 : exists('w:tskeleton_hypercomplete')
@@ -402,5 +409,20 @@ function! rer#ResetBreakpoints() "{{{3
         call rer#SetBreakpoint(filename, lnums)
     endfor
     let s:breakpoints = {}
+endf
+
+
+function! rer#SendR(word) "{{{3
+    let word = a:word
+    if !empty(word)
+        let word = '('. word .')'
+        let word .= repeat("\<Left>", len(word))
+    endif
+    call inputsave()
+    let r = input('R: ', word, 'customlist,rer#CommandComplete')
+    call inputrestore()
+    if !empty(r)
+        call rescreen#Send(r, 'rer')
+    endif
 endf
 

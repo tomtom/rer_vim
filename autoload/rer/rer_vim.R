@@ -50,14 +50,18 @@ if (!exists("rerHelp")) {
 
 if (!exists("rerComplete")) {
     rerComplete <- function(pattern, mode = '') {
+        matches <- apropos(pattern, ignore.case = FALSE)
+        if (!grepl('\\.', pattern)) {
+            matches <- unique(sub('\\..*$', '', matches))
+        }
         completions <- switch(mode,
-            tskeleton = sapply(apropos(pattern), function(t) {
+            tskeleton = sapply(matches, function(t) {
                 if (try(is.function(eval.parent(parse(text = t))), silent = TRUE) == TRUE)
                     sprintf("%s(<+CURSOR+>)", t)
                 else
                     t
                 }),
-            apropos(pattern)
+            matches
         )
         invisible(paste(completions, collapse = "\n"))
     }
