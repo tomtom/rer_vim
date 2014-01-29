@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    82
+" @Revision:    111
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
@@ -17,7 +17,11 @@ endf
 
 function! s:prototype.WrapResultPrinter(input) dict "{{{3
     let input = a:input
-    call add(input, 'print(.Last.value)')
+    " call add(input, 'print(.Last.value)')
+    if !empty(input)
+        let input[0] = '({'. input[0]
+        let input[-1] = input[-1] .'})'
+    endif
     return input
 endf
 
