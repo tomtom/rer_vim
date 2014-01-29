@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    214
+" @Revision:    239
 
 
 if !exists('g:rer#mapleader')
@@ -55,7 +55,10 @@ endif
 
 if !exists('g:rer#r_options')
     " Options (as string) passed to R.
-    let g:rer#r_options = 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : '')   "{{{2
+    " Example:>
+    "
+    "   let g:rer#r_options = 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : '')
+    let g:rer#r_options = ''   "{{{2
 endif
 
 
