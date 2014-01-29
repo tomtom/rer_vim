@@ -7,10 +7,16 @@ Features:
     - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
       arguments)
     - Use |K| to display informatin on an identifier
-    - Show examples for the word under cursor (nmap: gxx)
-    - Source the current buffer (nmap: gxs)
-    - Debug/Undebug a function (n/vmap: gxd)
-    - Display function arguments (n/vmap: gxf)
+    - Source the current buffer (nmap: gxrs)
+    - Debug/Undebug a function (n/vmap: gxrd)
+    - Display function arguments (n/vmap: gxrf)
+    - Show a summary for the word under cursor (nmap: gxrm)
+    - Show examples for the word under cursor (nmap: gxre)
+    - Run an R function on the word under cursor (nmap: gxrd)
+    - Experimental: Set/unset breakpoints (nmap: gxrb)
+    - |:Rer| command to send code to R
+    - |:Rcd| command to set R working directory to the current buffer 
+      (nmap: gxrcd)
 
 The map prefix (gx) is user-configurable via |g:rer#mapleader|.
 
