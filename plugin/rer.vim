@@ -2,7 +2,7 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @GIT:         http://github.com/tomtom/rer_vim
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    7
+" @Revision:    11
 " GetLatestVimScripts: 0 0 :AutoInstall: rer.vim
 
 if &cp || exists("loaded_rer")
@@ -21,9 +21,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-" Initiate an R |rescreen| session for the current buffer and setup some 
-" custom maps.
-command! -bang -nargs=* Rer Rescreen rer
+" Send some code to R.
+command! -bang -nargs=* Rer call rescreen#Send(<q-args>, 'rer')
 
 
 let &cpo = s:save_cpo

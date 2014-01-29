@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    45
+" @Revision:    63
 
 if exists('b:did_rer')
     finish
@@ -25,23 +25,28 @@ nnoremap <buffer> <LocalLeader>K :call rer#Inspect()<cr>
 
 if !empty(g:rer#mapleader)
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'d :call rer#Debug(expand("<cword>"))<cr>'
-    exec 'vnoremap <buffer> '. g:rer#mapleader .'d ""p:call rer#Debug(@")<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rs :call rer#SourceBuffer(bufnr("%"))<cr>'
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'s :call rer#SourceBuffer(bufnr("%"))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rK :call rer#Keyword("", "text")<cr>'
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'f :call rer#FunctionArgs(expand("<cword>"))<cr>'
-    exec 'vnoremap <buffer> '. g:rer#mapleader .'f :call rer#FunctionArgs(join(rescreen#GetSelection("v"), " "))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rd :call rer#Debug(expand("<cword>"))<cr>'
+    exec 'vnoremap <buffer> '. g:rer#mapleader .'rd ""p:call rer#Debug(@")<cr>'
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'x :call rescreen#Send("example(<c-r><c-w>)", "rer", "p")<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'b :call rer#SetBreakpoint(expand("%:p"), [line(".")])<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(expand("<cword>"))<cr>'
+    exec 'vnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(join(rescreen#GetSelection("v"), " "))<cr>'
+
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rm :call rescreen#Send("summary(<c-r><c-w>)", "rer")<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'re :call rescreen#Send("example(<c-r><c-w>)", "rer")<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rb :call rer#SetBreakpoint(expand("%:p"), [line(".")])<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rd :call rer#SendR(expand("<cword>"))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rcd :Rcd<cr>'
 
 endif
 
 
 if !empty(g:rer#map_eval_and_print)
 
-    exec 'nnoremap <buffer>' g:rer#map_eval_and_print ':call rescreen#Send(getline("."), "rer", "p")<cr>'
+    exec 'nnoremap <buffer>' g:rer#map_eval_and_print ':call rescreen#Send(getline("."), "rer", "p")<cr>+'
     exec 'inoremap <buffer>' g:rer#map_eval_and_print '<c-\><c-o>:call rescreen#Send(getline("."), "rer", "p")<cr>'
     exec 'xnoremap <buffer>' g:rer#map_eval_and_print ':call rescreen#Send(rescreen#GetSelection("v"), "rer", "p")<cr>'
 
