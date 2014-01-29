@@ -7,10 +7,16 @@ Features:
     - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
       arguments)
     - Use |K| to display informatin on an identifier
-    - Show examples for the word under cursor (nmap: gxx)
-    - Source the current buffer (nmap: gxs)
-    - Debug/Undebug a function (n/vmap: gxd)
-    - Display function arguments (n/vmap: gxf)
+    - Source the current buffer (nmap: gxrs)
+    - Debug/Undebug a function (n/vmap: gxrd)
+    - Display function arguments (n/vmap: gxrf)
+    - Show a summary for the word under cursor (nmap: gxrm)
+    - Show examples for the word under cursor (nmap: gxre)
+    - Run an R function on the word under cursor (nmap: gxrd)
+    - Experimental: Set/unset breakpoints (nmap: gxrb)
+    - |:Rer| command to send code to R
+    - |:Rcd| command to set R working directory to the current buffer 
+      (nmap: gxrcd)
 
 The map prefix (gx) is user-configurable via |g:rer#mapleader|.
 
@@ -60,6 +66,7 @@ Contents~
         g:rer#r_options .................. |g:rer#r_options|
         rer#Keyword ...................... |rer#Keyword()|
         rer#Inspect ...................... |rer#Inspect()|
+        rer#CommandComplete .............. |rer#CommandComplete()|
         rer#Completions .................. |rer#Completions()|
         rer#FunctionArgs ................. |rer#FunctionArgs()|
         rer#R_setwd ...................... |rer#R_setwd()|
@@ -72,8 +79,10 @@ Contents~
         rer#GetBreakpointsAsQFL .......... |rer#GetBreakpointsAsQFL()|
         rer#SetBreakpoint ................ |rer#SetBreakpoint()|
         rer#ResetBreakpoints ............. |rer#ResetBreakpoints()|
+        rer#SendR ........................ |rer#SendR()|
         prototype.ExitRepl
         prototype.WrapResultPrinter
+        prototype.SetTempFile
         prototype.WrapResultWriter
         rescreen#repl#rer#Extend ......... |rescreen#repl#rer#Extend()|
 
@@ -83,8 +92,7 @@ plugin/rer.vim~
 
                                                     *:Rer*
 :Rer
-    Initiate an R |rescreen| session for the current buffer and setup some 
-    custom maps.
+    Send some code to R.
 
 
 ========================================================================
@@ -156,19 +164,27 @@ g:rer#save                     (default: 1)
         2 ... Always save an image
 
                                                     *g:rer#r_options*
-g:rer#r_options                (default: 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : ''))
+g:rer#r_options                (default: '')
     Options (as string) passed to R.
+    Example:>
+
+      let g:rer#r_options = 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : '')
 
                                                     *rer#Keyword()*
-rer#Keyword(...)
+rer#Keyword(?word = "", ?help_type = "")
 
                                                     *rer#Inspect()*
 rer#Inspect(...)
     Inspect the word under the cursor.
 
+                                                    *rer#CommandComplete()*
+rer#CommandComplete(ArgLead, CmdLine, CursorPos)
+
                                                     *rer#Completions()*
 rer#Completions(base, ...)
     Omnicompletion for R.
+    If the base pattern contains no period ".", matches with periods are 
+    removed from the list of possible completions.
     See also 'omnifunc'.
 
                                                     *rer#FunctionArgs()*
@@ -209,6 +225,9 @@ rer#SetBreakpoint(filename, bplnums)
                                                     *rer#ResetBreakpoints()*
 rer#ResetBreakpoints()
 
+                                                    *rer#SendR()*
+rer#SendR(word)
+
 
 ========================================================================
 autoload/rescreen/repl/rer.vim~
@@ -216,6 +235,8 @@ autoload/rescreen/repl/rer.vim~
 prototype.ExitRepl
 
 prototype.WrapResultPrinter
+
+prototype.SetTempFile
 
 prototype.WrapResultWriter
 
