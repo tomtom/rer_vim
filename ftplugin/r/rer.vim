@@ -23,6 +23,20 @@ nnoremap <buffer> K :call rer#Keyword()<cr>
 nnoremap <buffer> <LocalLeader>K :call rer#Inspect()<cr>
 
 
+if exists(':popup')
+    amenu PopUp.-RSep-              :
+    amenu PopUp.Source\ R\ file     :call rer#SourceBuffer(bufnr("%"))<cr>
+    amenu PopUp.Cd\ to\ bufferdir   :Rcd<cr>
+    amenu PopUp.Help\ on\ word      :call rer#Keyword()<cr>
+    amenu PopUp.Function\ Defintion :call rer#FunctionArgs(expand("<cword>"))<cr>
+    amenu PopUp.Function\ Examples  :call rescreen#Send("example(<c-r><c-w>)", "rer")<cr>
+    amenu PopUp.Variable\ Summary   :call rescreen#Send("summary(<c-r><c-w>)", "rer")<cr>
+    amenu PopUp.Call\ R\ with\ word :call rer#SendR(expand("<cword>"))<cr>
+    amenu PopUp.Debug\ function     :call rer#Debug(expand("<cword>"))<cr>
+    amenu PopUp.Set\ Breakpoint     :call rer#SetBreakpoint(expand("%: p"), [line(".")])<cr>
+endif
+
+
 if !empty(g:rer#mapleader)
 
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rs :call rer#SourceBuffer(bufnr("%"))<cr>'
