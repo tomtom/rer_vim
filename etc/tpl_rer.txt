@@ -12,7 +12,7 @@ Features:
     - Display function arguments (n/vmap: gxrf)
     - Show a summary for the word under cursor (nmap: gxrm)
     - Show examples for the word under cursor (nmap: gxre)
-    - Run an R function on the word under cursor (nmap: gxrd)
+    - Run an R function on the word under cursor (nmap: gxrr)
     - Experimental: Set/unset breakpoints (nmap: gxrb)
     - |:Rer| command to send code to R
     - |:Rcd| command to set R working directory to the current buffer 

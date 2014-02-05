@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    63
+" @Revision:    76
 
 if exists('b:did_rer')
     finish
@@ -52,7 +52,7 @@ if !empty(g:rer#mapleader)
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rm :call rescreen#Send("summary(<c-r><c-w>)", "rer")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'re :call rescreen#Send("example(<c-r><c-w>)", "rer")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rb :call rer#SetBreakpoint(expand("%:p"), [line(".")])<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rd :call rer#SendR(expand("<cword>"))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rr :call rer#SendR(expand("<cword>"))<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rcd :Rcd<cr>'
 
 endif
