@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    239
+" @Revision:    254
 
 
 if !exists('g:rer#mapleader')
@@ -267,12 +267,18 @@ let s:breakpoints = {}
 " Toggle the debug status of a function.
 function! rer#Debug(fn) "{{{3
     " TLogVAR fn
-    if index(s:debugged, a:fn) == -1
-        let r = printf('debug(%s)', a:fn)
-        call rescreen#Send(r, 'rer')
-        call add(s:debugged, a:fn)
-        echom "rer: Debug:" a:fn
-        call s:HighlightDebug()
+    if !empty(a:fn) && index(s:debugged, a:fn) == -1
+        let r = printf('{debug(%s); "ok"}', a:fn)
+        let rv = rescreen#Send(r, 'rer', 'r')
+        " TLogVAR rv
+        if rv == "ok"
+            call add(s:debugged, a:fn)
+            call s:HighlightDebug()
+        else
+            echohl Error
+            echom "ReR: Cannot debug ". a:fn
+            echohl NONE
+        endif
     else
         call rer#Undebug(a:fn)
     endif
