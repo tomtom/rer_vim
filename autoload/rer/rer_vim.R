@@ -25,7 +25,7 @@ if ('history' %in% rer.options$features) {
 
 if (!exists("rerWriteBack")) {
     rerWriteBack <- function(val = .Last.value, con = rer.tempfile) {
-        stopifnot(!is.null(con) && !con == '')
+        stopifnot(!is.null(con) && con != '')
         writeLines(as.character(val), con = con)
     }
 }
