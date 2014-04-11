@@ -1,12 +1,25 @@
 Features:
 
-    - Evaluate code via |rescreen.txt|
-    - 'omnifunc' completion
-    - Use K to get information on an identifier
-    - Source the current buffer (nmap: gxs)
-    - Debug/Undebug a function (n/vmap: gxd)
+    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
+    - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
+      arguments)
+    - Use |K| to display informatin on an identifier
+    - Source the current buffer (nmap: gxrs)
+    - Debug/Undebug a function (n/vmap: gxrd)
+    - Display function arguments (n/vmap: gxrf)
+    - Show a summary for the word under cursor (nmap: gxrm)
+    - Show examples for the word under cursor (nmap: gxre)
+    - Run an R function on the word under cursor (nmap: gxrr)
+    - Experimental: Set/unset breakpoints (nmap: gxrb)
+    - |:Rer| command to send code to R
+    - |:Rcd| command to set R working directory to the current buffer 
+      (nmap: gxrcd)
 
 The map prefix (gx) is user-configurable via |g:rer#mapleader|.
+
+This plugin was tested on Linux (Ubuntu) & Windows. On Windows, this plugin 
+assumes the use of the native Windows version of R (or rather Rterm) and of 
+the Cygwin port of the screen utility.
 
 
 -----------------------------------------------------------------------
@@ -15,6 +28,10 @@ Status:  Experimental
 Dependencies:
   rescreen :: http://github.com/tomtom/rescreen_vim
       > git clone git://github.com/tomtom/rescreen_vim.git
+  tlib :: http://github.com/tomtom/tlib_vim
+      > git clone git://github.com/tomtom/tlib_vim.git
+  quickfixsigns :: http://github.com/tomtom/quickfixsigns_vim
+      > git clone git://github.com/tomtom/quickfixsigns_vim.git
 Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
 See http://github.com/tomtom for related plugins.
 
