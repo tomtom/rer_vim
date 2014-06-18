@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    77
+" @Revision:    80
 
 if exists('b:did_rer')
     finish
@@ -34,6 +34,7 @@ if exists(':popup')
     amenu PopUp.Call\ R\ with\ word :call rer#SendR(expand("<cword>"))<cr>
     amenu PopUp.Debug\ function     :call rer#Debug(expand("<cword>"))<cr>
     amenu PopUp.Set\ Breakpoint     :call rer#SetBreakpoint(expand("%: p"), [line(".")])<cr>
+    amenu PopUp.Rer\ Maps           :Rerhelp<cr>
 endif
 
 
@@ -66,6 +67,7 @@ if !empty(g:rer#map_eval_and_print)
 
 endif
 
+command! -buffer Rerhelp exec 'map <buffer>' g:rer#mapleader
 
 " Set R's working directory to the current buffer's directory.
 command! -bang -buffer Rcd call rer#Cd()
