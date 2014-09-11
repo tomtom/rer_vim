@@ -49,11 +49,13 @@ Contents~
         :Rer ............................. |:Rer|
         n_K .............................. |n_K|
         n_<LocalLeader>K ................. |n_<LocalLeader>K|
+        :Rerhelp ......................... |:Rerhelp|
         :Rcd ............................. |:Rcd|
         :Rsource ......................... |:Rsource|
         :Rdebug .......................... |:Rdebug|
         :RBreakpoint ..................... |:RBreakpoint|
         :RResetBreakpoints ............... |:RResetBreakpoints|
+        g:rer#quicklist .................. |g:rer#quicklist|
         g:rer#mapleader .................. |g:rer#mapleader|
         g:rer#map_eval_and_print ......... |g:rer#map_eval_and_print|
         g:rer#convert_path ............... |g:rer#convert_path|
@@ -80,6 +82,7 @@ Contents~
         rer#SetBreakpoint ................ |rer#SetBreakpoint()|
         rer#ResetBreakpoints ............. |rer#ResetBreakpoints()|
         rer#SendR ........................ |rer#SendR()|
+        rer#Quicklist .................... |rer#Quicklist()|
         prototype.ExitRepl
         prototype.WrapResultPrinter
         prototype.SetTempFile
@@ -106,6 +109,9 @@ n_K ... :call rer#Keyword()<cr>
 n_<LocalLeader>K ... :call rer#Inspect()<cr>
     Inspect an R object -- see |rer#Inspect()|.
 
+                                                    *:Rerhelp*
+:Rerhelp
+
                                                     *:Rcd*
 :Rcd
     Set R's working directory to the current buffer's directory.
@@ -129,6 +135,9 @@ RBreakpoint [FILENAME]
 
 ========================================================================
 autoload/rer.vim~
+
+                                                    *g:rer#quicklist*
+g:rer#quicklist                (default: ['debugger()', 'traceback()'])
 
                                                     *g:rer#mapleader*
 g:rer#mapleader                (default: g:rescreen#mapleader)
@@ -228,6 +237,9 @@ rer#ResetBreakpoints()
                                                     *rer#SendR()*
 rer#SendR(word)
 
+                                                    *rer#Quicklist()*
+rer#Quicklist(word)
+
 
 ========================================================================
 autoload/rescreen/repl/rer.vim~
@@ -245,4 +257,4 @@ rescreen#repl#rer#Extend(dict)
 
 
 
-vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
+vim:tw=78:fo=w2croql:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
