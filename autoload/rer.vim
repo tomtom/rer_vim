@@ -1,6 +1,11 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    254
+" @Revision:    261
+
+
+if !exists('g:rer#quicklist')
+    let g:rer#quicklist = ['debugger()', 'traceback()']   "{{{2
+endif
 
 
 if !exists('g:rer#mapleader')
@@ -431,4 +436,18 @@ function! rer#SendR(word) "{{{3
         call rescreen#Send(r, 'rer')
     endif
 endf
+
+
+function! rer#Quicklist(word) "{{{3
+    if exists('g:loaded_tlib')
+        let fav = tlib#input#List('s', 'Select function:', g:rer#quicklist)
+        if !empty(fav)
+            let r = tlib#string#Printf1(fav, a:word)
+            call rescreen#Send(r, 'rer')
+        endif
+    else
+        echoerr 'This feature requires tlib!'
+    endif
+endf
+
 

@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    82
+" @Revision:    85
 
 if exists('b:did_rer')
     finish
@@ -34,6 +34,7 @@ if exists(':popup')
     amenu PopUp.Call\ R\ with\ word :call rer#SendR(expand("<cword>"))<cr>
     amenu PopUp.Debug\ function     :call rer#Debug(expand("<cword>"))<cr>
     amenu PopUp.Set\ Breakpoint     :call rer#SetBreakpoint(expand("%: p"), [line(".")])<cr>
+    amenu PopUp.Call\ Favourite     :call rer#Quicklist(expand("<cword>"))<cr>
     amenu PopUp.Rer\ Maps           :Rerhelp<cr>
 endif
 
@@ -57,6 +58,9 @@ if !empty(g:rer#mapleader)
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rtb :call rer#SendR("traceback()")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rdbg :call rer#SendR("debugger()")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rcd :Rcd<cr>'
+
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rq :call rer#Quicklist(expand("<cword>"))<cr>'
+    exec 'vnoremap <buffer> '. g:rer#mapleader .'rq :call rer#Quicklist(join(rescreen#GetSelection("v"), " "))<cr>'
 
 endif
 
