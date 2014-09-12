@@ -137,7 +137,7 @@ RBreakpoint [FILENAME]
 autoload/rer.vim~
 
                                                     *g:rer#quicklist*
-g:rer#quicklist                (default: ['debugger()', 'traceback()'])
+g:rer#quicklist                (default: ['??"%s"', 'str(%s)', 'edit(%s)', 'debugger()', 'traceback()'])
 
                                                     *g:rer#mapleader*
 g:rer#mapleader                (default: g:rescreen#mapleader)

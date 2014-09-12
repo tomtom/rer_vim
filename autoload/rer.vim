@@ -1,10 +1,10 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    261
+" @Revision:    266
 
 
 if !exists('g:rer#quicklist')
-    let g:rer#quicklist = ['debugger()', 'traceback()']   "{{{2
+    let g:rer#quicklist = ['??"%s"', 'str(%s)', 'edit(%s)', 'debugger()', 'traceback()']   "{{{2
 endif
 
 
@@ -439,10 +439,11 @@ endf
 
 
 function! rer#Quicklist(word) "{{{3
+    TLogVAR a:word
     if exists('g:loaded_tlib')
-        let fav = tlib#input#List('s', 'Select function:', g:rer#quicklist)
-        if !empty(fav)
-            let r = tlib#string#Printf1(fav, a:word)
+        let ql = map(copy(g:rer#quicklist), 'tlib#string#Printf1(v:val, a:word)')
+        let r = tlib#input#List('s', 'Select function:', ql)
+        if !empty(r)
             call rescreen#Send(r, 'rer')
         endif
     else
