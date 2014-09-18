@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    114
+" @Revision:    115
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
@@ -22,7 +22,7 @@ function! s:prototype.WrapResultPrinter(input) dict "{{{3
         let input[0] = '({'. input[0]
         " Add a newline in order to correctly deal with comments at the 
         " end of a line
-        call add(input, '})')
+        let input[-1] .= '})'
     endif
     return input
 endf
