@@ -1,10 +1,10 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    267
+" @Revision:    284
 
 
 if !exists('g:rer#quicklist')
-    let g:rer#quicklist = ['??"%s"', 'str(%s)', 'edit(%s)', 'fix(%s)', 'head(%s)', 'debugger()', 'traceback()']   "{{{2
+    let g:rer#quicklist = ['??"%s"', 'str(%s)', 'summary(%s)', 'head(%s)', 'edit(%s)', 'fix(%s)', 'debugger()', 'traceback()', 'example(%s)']   "{{{2
 endif
 
 
@@ -71,6 +71,11 @@ if !exists('g:rer#options')
     " Define a feature set.
     " :nodoc:
     let g:rer#options = {'features': ['history']}   "{{{2
+endif
+
+
+if !exists('g:rer#handlers')
+    let g:rer#handlers = [{'key': 5, 'agent': 'rer#EditItem', 'key_name': '<c-e>', 'help': 'Edit item'}]   "{{{2
 endif
 
 
@@ -439,10 +444,10 @@ endf
 
 
 function! rer#Quicklist(word) "{{{3
-    TLogVAR a:word
+    " TLogVAR a:word
     if exists('g:loaded_tlib')
         let ql = map(copy(g:rer#quicklist), 'tlib#string#Printf1(v:val, a:word)')
-        let r = tlib#input#List('s', 'Select function:', ql)
+        let r = tlib#input#List('s', 'Select function:', ql, g:rer#handlers)
         if !empty(r)
             call rescreen#Send(r, 'rer')
         endif
@@ -451,4 +456,26 @@ function! rer#Quicklist(word) "{{{3
     endif
 endf
 
+
+function! rer#EditItem(world, items) "{{{3
+    if g:loaded_tlib >= 113
+        " TLogVAR a:items
+        let item = get(a:items, 0, '')
+        call inputsave()
+        let item = input('R: ', item)
+        call inputrestore()
+        " TLogVAR item
+        if item != ''
+            let a:world.rv = item
+            let a:world.state = 'picked'
+            return a:world
+        endif
+    else
+        echohl WarningMsg
+        echom 'EditItem requires tlib >= 1.13'
+        echohl NONE
+    endif
+    let a:world.state = 'redisplay'
+    return a:world
+endf
 

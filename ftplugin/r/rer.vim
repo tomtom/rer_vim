@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    85
+" @Revision:    90
 
 if exists('b:did_rer')
     finish
@@ -51,16 +51,11 @@ if !empty(g:rer#mapleader)
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(expand("<cword>"))<cr>'
     exec 'vnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(join(rescreen#GetSelection("v"), " "))<cr>'
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rm :call rescreen#Send("summary(<c-r><c-w>)", "rer")<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'re :call rescreen#Send("example(<c-r><c-w>)", "rer")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rb :call rer#SetBreakpoint(expand("%:p"), [line(".")])<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rr :call rer#SendR(expand("<cword>"))<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rtb :call rer#SendR("traceback()")<cr>'
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rdbg :call rer#SendR("debugger()")<cr>'
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rcd :Rcd<cr>'
 
-    exec 'nnoremap <buffer> '. g:rer#mapleader .'rq :call rer#Quicklist(expand("<cword>"))<cr>'
-    exec 'vnoremap <buffer> '. g:rer#mapleader .'rq :call rer#Quicklist(join(rescreen#GetSelection("v"), " "))<cr>'
+    exec 'nnoremap <buffer> '. g:rer#mapleader .'rr :call rer#Quicklist(expand("<cword>"))<cr>'
+    exec 'vnoremap <buffer> '. g:rer#mapleader .'rr :call rer#Quicklist(join(rescreen#GetSelection("v"), " "))<cr>'
 
 endif
 
