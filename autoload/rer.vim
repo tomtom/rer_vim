@@ -1,10 +1,13 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    285
+" @Revision:    289
 
 
 if !exists('g:rer#quicklist')
-    let g:rer#quicklist = ['??"%s"', 'str(%s)', 'summary(%s)', 'head(%s)', 'edit(%s)', 'fix(%s)', 'debugger()', 'traceback()', 'install.packages("%s")', 'example(%s)']   "{{{2
+    let g:rer#quicklist = ['??"%s"', 'str(%s)', 'summary(%s)', 'head(%s)', 'edit(%s)', 'fix(%s)', 'debugger()', 'traceback()', 'install.packages("%s")', 'update.packages()', 'example("%s")', 'graphics.off()']   "{{{2
+    if exists('g:rer_quicklist_etc')
+        let g:rer#quicklist += g:rer_quicklist_etc
+    endif
 endif
 
 
