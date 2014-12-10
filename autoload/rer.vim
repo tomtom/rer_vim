@@ -79,6 +79,14 @@ if !exists('g:rer#handlers')
 endif
 
 
+if !exists('g:rer#tags_cmd')
+    let g:rer#tags_cmd = 'ctags -R *.R */*.R'   "{{{2
+    if has('fname_case')
+        let g:rer#tags_cmd .= ' *.r */*.r'
+    endif
+endif
+
+
 " :nodoc:
 function! rer#Filename(filename, ...) "{{{3
     let filename = substitute(a:filename, '\\', '/', 'g')
@@ -209,9 +217,11 @@ function! rer#FunctionArgs(word) "{{{3
 endf
 
 
+let s:wd = ''
+
 function! rer#R_setwd(dict) "{{{3
-    let wd = rer#Filename(expand('%:p:h'), a:dict)
-    return printf('setwd(%s)', rer#ArgumentString(wd))
+    let s:wd = rer#Filename(expand('%:p:h'), a:dict)
+    return printf('setwd(%s)', rer#ArgumentString(s:wd))
 endf
 
 
@@ -477,5 +487,21 @@ function! rer#EditItem(world, items) "{{{3
     endif
     let a:world.state = 'redisplay'
     return a:world
+endf
+
+
+function! rer#Tags() "{{{3
+    if empty(s:wd)
+        echohl WarningMsg
+        echom "rer#Tags: Working directory is not set"
+        echohl NONE
+    else
+        exec 'cd!' fnameescape(s:wd)
+        try
+            exec g:rer#tags_cmd
+        finally
+            cd! -
+        endtry
+    endif
 endf
 

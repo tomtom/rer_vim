@@ -87,5 +87,7 @@ command! -bang -buffer -nargs=? RBreakpoint call rer#SetBreakpoint(<q-args>, [])
 
 command! -bang -buffer RResetBreakpoints call rer#ResetBreakpoints()
 
+command! -buffer Rtags call rer#Tags()
+
 
 let b:did_rer = 1
