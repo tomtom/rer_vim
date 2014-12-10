@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    90
+" @Revision:    94
 
 if exists('b:did_rer')
     finish
@@ -48,6 +48,10 @@ if !empty(g:rer#mapleader)
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rd :call rer#Debug(expand("<cword>"))<cr>'
     exec 'vnoremap <buffer> '. g:rer#mapleader .'rd ""p:call rer#Debug(@")<cr>'
 
+    if exists('g:loaded_tinykeymap')
+        exec 'nnoremap <buffer> '. g:rer#mapleader .'rD :Tinykeymap rdebug<cr>'
+    endif
+
     exec 'nnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(expand("<cword>"))<cr>'
     exec 'vnoremap <buffer> '. g:rer#mapleader .'rf :call rer#FunctionArgs(join(rescreen#GetSelection("v"), " "))<cr>'
 
@@ -79,6 +83,10 @@ command! -bang -buffer Rsource call rer#SourceBuffer(bufnr("%"))
 " :display: :Rdebug [FUNCTION]
 " Debug or undebug FUNCTION.
 command! -bang -buffer -nargs=? Rdebug call rer#Debug(<q-args>)
+
+if exists('g:loaded_tinykeymap')
+    command! -bang -buffer -nargs=? Rdebugger Tinykeymap rdebug
+endif
 
 " :display: RBreakpoint [FILENAME]
 " List and remove breakpoints.
