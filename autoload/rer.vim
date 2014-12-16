@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    293
+" @Revision:    296
 
 
 if !exists('g:rer#quicklist')
@@ -82,11 +82,16 @@ if !exists('g:rer#handlers')
 endif
 
 
-if !exists('g:rer#tags_cmd')
-    let g:rer#tags_cmd = (has('win32') || has('win64') ? 'ctags.exe' : 'ctags') . ' -R *.R */*.R'   "{{{2
+if !exists('g:rer#tags_patterns')
+    let g:rer#tags_patterns = '*.R */*.R'   "{{{2
     if has('fname_case')
-        let g:rer#tags_cmd .= ' *.r */*.r'
+        let g:rer#tags_patterns .= ' *.r */*.r'
     endif
+endif
+
+
+if !exists('g:rer#tags_cmd')
+    let g:rer#tags_cmd = (has('win32') || has('win64') ? 'ctags.exe' : 'ctags') .' -R '. g:rer#tags_patterns   "{{{2
 endif
 
 
