@@ -1,6 +1,11 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    296
+" @Revision:    300
+
+
+if !exists('g:rer#debug')
+    let g:rer#debug = 0
+endif
 
 
 if !exists('g:rer#quicklist')
@@ -92,6 +97,9 @@ endif
 
 if !exists('g:rer#tags_cmd')
     let g:rer#tags_cmd = (has('win32') || has('win64') ? 'ctags.exe' : 'ctags') .' -R '. g:rer#tags_patterns   "{{{2
+    if g:rer#debug
+        let g:rer#tags_cmd .= ' || sleep 3'
+    endif
 endif
 
 
