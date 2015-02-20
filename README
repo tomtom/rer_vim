@@ -26,12 +26,12 @@ the Cygwin port of the screen utility.
 
 Status:  Experimental
 Dependencies:
-  rescreen :: http://github.com/tomtom/rescreen_vim
-      > git clone git://github.com/tomtom/rescreen_vim.git
-  tlib :: http://github.com/tomtom/tlib_vim
-      > git clone git://github.com/tomtom/tlib_vim.git
   quickfixsigns :: http://github.com/tomtom/quickfixsigns_vim
       > git clone git://github.com/tomtom/quickfixsigns_vim.git
+  tlib :: http://github.com/tomtom/tlib_vim
+      > git clone git://github.com/tomtom/tlib_vim.git
+  rescreen :: http://github.com/tomtom/rescreen_vim
+      > git clone git://github.com/tomtom/rescreen_vim.git
 Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
 See http://github.com/tomtom for related plugins.
 

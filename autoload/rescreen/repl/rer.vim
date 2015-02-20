@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    115
+" @Revision:    119
 
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
