@@ -501,15 +501,17 @@ endf
 function! rer#Tags() "{{{3
     if empty(s:wd)
         echohl WarningMsg
-        echom "rer#Tags: Working directory is not set"
+        echom "rer#Tags: Working directory is not set; using expand('%:p:h')"
         echohl NONE
+        let wd = expand('%:p:h')
     else
-        exec 'cd!' fnameescape(s:wd)
-        try
-            exec 'silent !' g:rer#tags_cmd
-        finally
-            cd! -
-        endtry
+        let wd = s:wd
     endif
+    exec 'lcd!' fnameescape(wd)
+    try
+        exec 'silent !' g:rer#tags_cmd
+    finally
+        lcd! -
+    endtry
 endf
 
