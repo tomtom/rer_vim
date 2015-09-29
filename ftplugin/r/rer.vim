@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    94
+" @Revision:    112
 
 if exists('b:did_rer')
     finish
@@ -96,6 +96,20 @@ command! -bang -buffer -nargs=? RBreakpoint call rer#SetBreakpoint(<q-args>, [])
 command! -bang -buffer RResetBreakpoints call rer#ResetBreakpoints()
 
 command! -buffer Rtags call rer#Tags()
+
+
+for s:name in g:rer#support_maps
+    if s:name ==# 'statet'
+        nnoremap <buffer> <c-r><c-r> :call rescreen#Send(getline("."), "rer")<cr>
+        imap <buffer> <c-r><c-r> <c-\><c-o><c-r><c-r>
+        xnoremap <buffer> <c-r><c-r> :call rescreen#Send(join(rescreen#GetSelection("v"), "\n"), "rer")<cr>
+        smap <buffer> <c-r><c-r> <c-o><c-r><c-r>
+        nnoremap <buffer> <c-r><c-s> :Rsource<cr>
+        nmap <buffer> <c-r><c-e> vip<c-r><c-r>
+        map <buffer> <c-r>1 K
+    endif
+endfor
+unlet! s:name
 
 
 let b:did_rer = 1

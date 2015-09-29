@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    300
+" @Revision:    302
 
 
 if !exists('g:rer#debug')
@@ -18,6 +18,13 @@ endif
 
 if !exists('g:rer#mapleader')
     let g:rer#mapleader = g:rescreen#mapleader   "{{{2
+endif
+
+
+if !exists('g:rer#support_maps')
+    " A list of map names. Enable maps similar to:
+    " - statet
+    let g:rer#support_maps = ['statet']   "{{{2
 endif
 
 
