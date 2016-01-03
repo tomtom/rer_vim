@@ -1,6 +1,15 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    302
+" @Revision:    325
+
+
+if !exists('g:loaded_tlib') || g:loaded_tlib < 119
+    runtime plugin/tlib.vim
+    if !exists('g:loaded_tlib') || g:loaded_tlib < 119
+        echoerr 'tlib >= 1.19 is required'
+        finish
+    endif
+endif
 
 
 if !exists('g:rer#debug')
@@ -16,8 +25,13 @@ if !exists('g:rer#quicklist')
 endif
 
 
+if !exists('g:rer#client_name')
+    let g:rer#client_name = 'rescreen'   "{{{2
+endif
+
+
 if !exists('g:rer#mapleader')
-    let g:rer#mapleader = g:rescreen#mapleader   "{{{2
+    let g:rer#mapleader = '<LocalLeader>r'   "{{{2
 endif
 
 
@@ -25,6 +39,11 @@ if !exists('g:rer#support_maps')
     " A list of map names. Enable maps similar to:
     " - statet
     let g:rer#support_maps = ['statet']   "{{{2
+endif
+
+
+if !exists('g:rer#map_eval')
+    let g:rer#map_eval = '<c-cr>'   "{{{2
 endif
 
 
@@ -47,11 +66,6 @@ endif
 if !exists('g:rer#highlight_breakpoint')
     " Highlight group for breakpoint
     let g:rer#highlight_breakpoint = 'SpellBad'   "{{{2
-endif
-
-
-if !exists('g:rer#shell')
-    let g:rer#shell = g:rescreen#shell   "{{{2
 endif
 
 
@@ -152,7 +166,7 @@ function! rer#Keyword(...) "{{{3
         let etc = ', '. etc
     endif
     let r = printf('rerKeyword(%s, %s%s)', name, namestring, etc)
-    call rescreen#Send(r, 'rer')
+    call rer#Send(r)
 endf
 
 
@@ -161,7 +175,7 @@ function! rer#Inspect(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
     " TLogVAR word
     let r = printf('rerInspect(%s)', word)
-    call rescreen#Send(r, 'rer')
+    call rer#Send(r)
 endf
 
 
@@ -189,7 +203,7 @@ endf
 " See also 'omnifunc'.
 function! rer#Completions(base, ...) "{{{3
     let use_empty_base = a:0 >= 1 ? a:1 : exists('w:tskeleton_hypercomplete')
-    let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+    let client = rer#GetClient()
     let clist = []
     let fn = s:GetFunctionOfWord(a:base, 1)
     if !empty(fn)
@@ -197,7 +211,7 @@ function! rer#Completions(base, ...) "{{{3
             let fn = string(fn)
         endif
         let r = printf('rerFormals(%s, names.only = TRUE)', fn)
-        let args = rescreen.EvaluateInSession(r, 'r')
+        let args = client.EvaluateInSession(r, 'r')
         if args !=# 'NULL'
             let argslist = split(args, '\n')
             let argslist = map(argslist, 'v:val == "..." ? v:val : v:val ." = "')
@@ -210,7 +224,7 @@ function! rer#Completions(base, ...) "{{{3
                     \ rer#ArgumentString('^'. escape(a:base, '^$.*\[]~"')),
                     \ rer#ArgumentString('')
                     \ )
-        let completions = rescreen.EvaluateInSession(r, 'r')
+        let completions = client.EvaluateInSession(r, 'r')
         " TLogVAR completions
         if completions !=# 'NULL'
             let clist += sort(split(completions, '\n'))
@@ -227,10 +241,10 @@ function! rer#FunctionArgs(word) "{{{3
         if empty(fn)
             let fn = "NULL"
         endif
-        let rescreen = rescreen#Init(1, {'repltype': 'rer'})
+        let client = rer#GetClient()
         let r = printf('rerFunctionArgs(%s, %s)', a:word, fn)
         " TLogVAR r
-        let val = rescreen.EvaluateInSession(r, 'r')
+        let val = client.EvaluateInSession(r, 'r')
         if !empty(val) && val != "NULL"
             echohl Type
             echo val
@@ -242,16 +256,16 @@ endf
 
 let s:wd = ''
 
-function! rer#R_setwd(dict) "{{{3
-    let s:wd = rer#Filename(expand('%:p:h'), a:dict)
+function! rer#R_setwd(client) "{{{3
+    let s:wd = rer#Filename(expand('%:p:h'), a:client)
     return printf('setwd(%s)', rer#ArgumentString(s:wd))
 endf
 
 
 function! rer#Cd() "{{{3
-    let rescreen = rescreen#Init(1, {'repltype': 'rer'})
-    let r = rer#R_setwd(rescreen)
-    call rescreen.EvaluateInSession(r, '')
+    let client = rer#GetClient()
+    let r = rer#R_setwd(client)
+    call client.EvaluateInSession(r, '')
 endf
 
 
@@ -299,7 +313,7 @@ function! rer#SourceBuffer(bufnr, ...) "{{{3
         let filename = rer#Filename(filename, b:rer)
         let source = a:0 >= 1 && a:1 ? 'source' : 'rerSource'
         let r = printf('%s(%s)', source, rer#ArgumentString(filename))
-        call rescreen#Send(r, 'rer')
+        call rer#Send(r)
     endif
 endf
 
@@ -312,7 +326,7 @@ function! rer#Debug(fn) "{{{3
     " TLogVAR fn
     if !empty(a:fn) && index(s:debugged, a:fn) == -1
         let r = printf('{debug(%s); "ok"}', a:fn)
-        let rv = rescreen#Send(r, 'rer', 'r')
+        let rv = rer#Send(r, 'r')
         " TLogVAR rv
         if rv == "ok"
             call add(s:debugged, a:fn)
@@ -331,7 +345,7 @@ endf
 " Undebug a debugged function.
 function! rer#Undebug(fn) "{{{3
     let fn = a:fn
-    if empty(fn) && exists('g:loaded_tlib')
+    if empty(fn)
         let fn = tlib#input#List('s', 'Select function:', s:debugged)
     endif
     if !empty(fn)
@@ -343,7 +357,7 @@ function! rer#Undebug(fn) "{{{3
             echom "ReR: Not a debugged function?" fn
         endif
         let r = printf('undebug(%s)', fn)
-        call rescreen#Send(r, 'rer')
+        call rer#Send(r)
         call s:HighlightDebug()
     endif
 endf
@@ -401,9 +415,7 @@ function! rer#SetBreakpoint(filename, bplnums) "{{{3
     let filename = a:filename
     let bplnums = a:bplnums
     if empty(filename)
-        if exists('g:loaded_tlib')
-            let filename = tlib#input#List('s', 'Select filename:', keys(s:breakpoints))
-        endif
+        let filename = tlib#input#List('s', 'Select filename:', keys(s:breakpoints))
     elseif filename == '%'
         let filename = expand("%:p")
     endif
@@ -417,10 +429,8 @@ function! rer#SetBreakpoint(filename, bplnums) "{{{3
     endif
     let lnums = s:breakpoints[filename].lnums
     if empty(bplnums)
-        if exists('g:loaded_tlib')
-            let bplnums = tlib#input#List('m', 'Select breakpoint:', lnums)
-            let bplnums = map(bplnums, 'str2nr(v:val, 10)')
-        endif
+        let bplnums = tlib#input#List('m', 'Select breakpoint:', lnums)
+        let bplnums = map(bplnums, 'str2nr(v:val, 10)')
     endif
     let view = winsaveview()
     try
@@ -440,10 +450,9 @@ function! rer#SetBreakpoint(filename, bplnums) "{{{3
                 echom "Remove breakpoint"
                 let clear = "TRUE"
             endif
-            let rescreen = rescreen#Init(1, {'repltype': 'rer'})
             let r = printf('rerSetBreakpoint(%s, %s, clear = %s, nameonly = FALSE)',
                         \ string(escape(filename, '\"')), lnum, clear)
-            call rescreen#Send(r, 'rer')
+            call rer#Send(r)
             let s:breakpoints[filename].lnums = lnums
         endfor
         call s:HighlightDebug()
@@ -471,42 +480,32 @@ function! rer#SendR(word) "{{{3
     let r = input('R: ', word, 'customlist,rer#CommandComplete')
     call inputrestore()
     if !empty(r)
-        call rescreen#Send(r, 'rer')
+        call rer#Send(r)
     endif
 endf
 
 
 function! rer#Quicklist(word) "{{{3
     " TLogVAR a:word
-    if exists('g:loaded_tlib')
-        let ql = map(copy(g:rer#quicklist), 'tlib#string#Printf1(v:val, a:word)')
-        let r = tlib#input#List('s', 'Select function:', ql, g:rer#handlers)
-        if !empty(r)
-            call rescreen#Send(r, 'rer')
-        endif
-    else
-        echoerr 'This feature requires tlib!'
+    let ql = map(copy(g:rer#quicklist), 'tlib#string#Printf1(v:val, a:word)')
+    let r = tlib#input#List('s', 'Select function:', ql, g:rer#handlers)
+    if !empty(r)
+        call rer#Send(r)
     endif
 endf
 
 
 function! rer#EditItem(world, items) "{{{3
-    if g:loaded_tlib >= 113
-        " TLogVAR a:items
-        let item = get(a:items, 0, '')
-        call inputsave()
-        let item = input('R: ', item)
-        call inputrestore()
-        " TLogVAR item
-        if item != ''
-            let a:world.rv = item
-            let a:world.state = 'picked'
-            return a:world
-        endif
-    else
-        echohl WarningMsg
-        echom 'EditItem requires tlib >= 1.13'
-        echohl NONE
+    " TLogVAR a:items
+    let item = get(a:items, 0, '')
+    call inputsave()
+    let item = input('R: ', item)
+    call inputrestore()
+    " TLogVAR item
+    if item != ''
+        let a:world.rv = item
+        let a:world.state = 'picked'
+        return a:world
     endif
     let a:world.state = 'redisplay'
     return a:world
@@ -528,5 +527,16 @@ function! rer#Tags() "{{{3
     finally
         lcd! -
     endtry
+endf
+
+
+function! rer#GetClient() abort "{{{3
+    return rer#client#{g:rer#client_name}#GetInstance()
+endf
+
+
+function! rer#Send(code, ...) abort "{{{3
+    let client = rer#GetClient()
+    return call(client.Send, [a:code] + a:000, client)
 endf
 

@@ -1,7 +1,11 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    119
+" @Revision:    120
 
+
+if !exists('g:rescreen#repl#rer#shell')
+    let g:rescreen#repl#rer#shell = g:rescreen#shell   "{{{2
+endif
 
 let s:sfile = rer#Filename(expand('<sfile>:p:h'))
 
@@ -60,7 +64,7 @@ function! rescreen#repl#rer#Extend(dict) "{{{3
     else
         let save = 0
     endif
-    let a:dict.shell = g:rer#shell
+    let a:dict.shell = g:rescreen#repl#rer#shell
     let a:dict.repl_convert_path = g:rer#convert_path
     let a:dict.repl = join([g:rer#repl, save ? ' --save' : ' --no-save', g:rer#repl_args])
     let a:dict.repl_handler = copy(s:prototype)

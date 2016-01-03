@@ -2,7 +2,7 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @GIT:         http://github.com/tomtom/rer_vim
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    11
+" @Revision:    12
 " GetLatestVimScripts: 0 0 :AutoInstall: rer.vim
 
 if &cp || exists("loaded_rer")
@@ -22,7 +22,7 @@ set cpo&vim
 
 
 " Send some code to R.
-command! -bang -nargs=* Rer call rescreen#Send(<q-args>, 'rer')
+command! -bang -nargs=* Rer call rer#Send(<q-args>)
 
 
 let &cpo = s:save_cpo

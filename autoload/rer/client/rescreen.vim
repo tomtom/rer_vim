@@ -1,0 +1,54 @@
+" @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
+" @Website:     https://github.com/tomtom
+" @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
+" @Last Change: 2016-01-03
+" @Revision:    17
+
+
+let s:prototype = {}
+
+
+function! s:prototype.Init() abort dict "{{{3
+    let self.rescreen = rescreen#Init(1, {'repltype': 'rer'})
+endf
+
+
+function! s:prototype.Repl() abort dict "{{{3
+    return self.rescreen
+endf
+
+
+function! s:prototype.Send(code, ...) abort dict "{{{3
+    return call(function('rescreen#Send'), [a:code, 'rer'] + a:000)
+endf
+
+
+function! s:prototype.Filename(filename) abort dict "{{{3
+    let repl = self.Repl()
+    return repl.Filename(a:filename)
+endf
+
+
+function! s:prototype.EvaluateInSession(input, mode) abort dict "{{{3
+    let repl = self.Repl()
+    return call(repl.EvaluateInSession, [a:input, a:mode], repl)
+endf
+
+
+function! rer#client#rescreen#GetInstance() abort "{{{3
+    if !exists('s:instance')
+        let s:instance = copy(s:prototype)
+        call s:instance.Init()
+    endif
+    return s:instance
+endf
+
+
+function! rer#client#rescreen#Ftplugin() abort "{{{3
+    Rescreen -default rer
+    if empty(&omnifunc)
+        let b:rescreen_completions='rer#Completions'
+        setlocal omnifunc=rescreen#Complete
+    endif
+endf
+
