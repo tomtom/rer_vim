@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    325
+" @Revision:    333
 
 
 if !exists('g:loaded_tlib') || g:loaded_tlib < 119
@@ -26,6 +26,10 @@ endif
 
 
 if !exists('g:rer#client_name')
+    " The name of the client that talks to R.
+    "
+    " Currently supported values:
+    "   rescreen ... Use the rescreen_vim VIM plugin
     let g:rer#client_name = 'rescreen'   "{{{2
 endif
 
@@ -127,7 +131,7 @@ endif
 " :nodoc:
 function! rer#Filename(filename, ...) "{{{3
     let filename = substitute(a:filename, '\\', '/', 'g')
-    if a:0 >= 1
+    if a:0 >= 1 && has_key(a:1, 'Filename')
         let filename = a:1.Filename(filename)
     endif
     return filename
@@ -531,7 +535,15 @@ endf
 
 
 function! rer#GetClient() abort "{{{3
-    return rer#client#{g:rer#client_name}#GetInstance()
+    if !exists('b:rer_'. g:rer#client_name .'_client')
+        let client = copy(rer#client#{g:rer#client_name}#GetPrototype())
+        if client.Init()
+            let b:rer_{g:rer#client_name}_client = client
+        else
+            return {}
+        endif
+    endif
+    return b:rer_{g:rer#client_name}_client
 endf
 
 

@@ -3,22 +3,24 @@
 
 Features:
 
-    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
+    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>)
+        - If |g:rer#client_name| is 'rescreen', gx is defined as 
+          operator too.
     - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
       arguments)
     - Use |K| to display informatin on an identifier
-    - Source the current buffer (nmap: gxrs)
-    - Debug/Undebug a function (n/vmap: gxrd)
-    - Display function arguments (n/vmap: gxrf)
-    - Show a summary for the word under cursor (nmap: gxrm)
-    - Show examples for the word under cursor (nmap: gxre)
-    - Run an R function on the word under cursor (nmap: gxrr)
-    - Experimental: Set/unset breakpoints (nmap: gxrb)
+    - Source the current buffer (nmap: <LocalLeader>rs)
+    - Debug/Undebug a function (n/vmap: <LocalLeader>rd)
+    - Display function arguments (n/vmap: <LocalLeader>rf)
+    - Show a summary for the word under cursor (nmap: <LocalLeader>rm)
+    - Show examples for the word under cursor (nmap: <LocalLeader>re)
+    - Run an R function on the word under cursor (nmap: <LocalLeader>rr)
+    - Experimental: Set/unset breakpoints (nmap: <LocalLeader>rb)
     - |:Rer| command to send code to R
     - |:Rcd| command to set R working directory to the current buffer 
-      (nmap: gxrcd)
+      (nmap: <LocalLeader>rcd)
 
-The map prefix (gx) is user-configurable via |g:rer#mapleader|.
+The map prefix (<LocalLeader>r) is user-configurable via |g:rer#mapleader|.
 
 This plugin was tested on Linux (Ubuntu) & Windows. On Windows, this plugin 
 assumes the use of the native Windows version of R (or rather Rterm) and of 
@@ -28,66 +30,102 @@ the Cygwin port of the screen utility.
 -----------------------------------------------------------------------
 Install~
 
-Edit the vba file and type: >
+To install the vimball, edit the vba file and type: >
 
     :so %
 
-See :help vimball for details. If you have difficulties or use vim 7.0, 
-please make sure, you have the current version of vimball (vimscript 
-#1502) installed or update your runtime.
+See `:help vimball` for details.
 
-This plugin requires the rescreen vim plugin to be installed 
-(https://github.com/tomtom/rescreen_vim).
+To install from github, please use a plugin manager like enable_vim, pathogen, 
+VAM, Vundle, NeoBundle, vim-plug, vim-unbundle etc.
 
-Certain functions make use of the tlib vim plugin (vimscript #1863) if 
-available.
+Dependencies:
+    - This script requires tlib_vim (vimscript #1863) to be installed 
+      (https://github.com/tomtom/tlib_vim).
+    - If |g:rer#client_name| is 'rescreen', the rescreen_vim plugin is 
+      required too (https://github.com/tomtom/rescreen_vim).
+
+Also available on https://github.com/tomtom/rer_vim
 
 
 ========================================================================
 Contents~
 
-        :Rer ............................. |:Rer|
-        n_K .............................. |n_K|
-        n_<LocalLeader>K ................. |n_<LocalLeader>K|
-        :Rerhelp ......................... |:Rerhelp|
-        :Rcd ............................. |:Rcd|
-        :Rsource ......................... |:Rsource|
-        :Rdebug .......................... |:Rdebug|
-        :RBreakpoint ..................... |:RBreakpoint|
-        :RResetBreakpoints ............... |:RResetBreakpoints|
-        g:rer#quicklist .................. |g:rer#quicklist|
-        g:rer#mapleader .................. |g:rer#mapleader|
-        g:rer#map_eval_and_print ......... |g:rer#map_eval_and_print|
-        g:rer#convert_path ............... |g:rer#convert_path|
-        g:rer#highlight_debug ............ |g:rer#highlight_debug|
-        g:rer#highlight_breakpoint ....... |g:rer#highlight_breakpoint|
-        g:rer#shell ...................... |g:rer#shell|
-        g:rer#repl ....................... |g:rer#repl|
-        g:rer#repl_args .................. |g:rer#repl_args|
-        g:rer#save ....................... |g:rer#save|
-        g:rer#r_options .................. |g:rer#r_options|
-        rer#Keyword ...................... |rer#Keyword()|
-        rer#Inspect ...................... |rer#Inspect()|
-        rer#CommandComplete .............. |rer#CommandComplete()|
-        rer#Completions .................. |rer#Completions()|
-        rer#FunctionArgs ................. |rer#FunctionArgs()|
-        rer#R_setwd ...................... |rer#R_setwd()|
-        rer#Cd ........................... |rer#Cd()|
-        rer#RVal ......................... |rer#RVal()|
-        rer#RDict ........................ |rer#RDict()|
-        rer#SourceBuffer ................. |rer#SourceBuffer()|
-        rer#Debug ........................ |rer#Debug()|
-        rer#Undebug ...................... |rer#Undebug()|
-        rer#GetBreakpointsAsQFL .......... |rer#GetBreakpointsAsQFL()|
-        rer#SetBreakpoint ................ |rer#SetBreakpoint()|
-        rer#ResetBreakpoints ............. |rer#ResetBreakpoints()|
-        rer#SendR ........................ |rer#SendR()|
-        rer#Quicklist .................... |rer#Quicklist()|
+        :Rer ................................. |:Rer|
+        n_K .................................. |n_K|
+        n_<LocalLeader>K ..................... |n_<LocalLeader>K|
+        :Rerhelp ............................. |:Rerhelp|
+        :Rcd ................................. |:Rcd|
+        :Rsource ............................. |:Rsource|
+        :Rdebug .............................. |:Rdebug|
+        :Rdebugger ........................... |:Rdebugger|
+        :RBreakpoint ......................... |:RBreakpoint|
+        :RResetBreakpoints ................... |:RResetBreakpoints|
+        :Rtags ............................... |:Rtags|
+        n_<c-r><c-r> ......................... |n_<c-r><c-r>|
+        i_<c-r><c-r> ......................... |i_<c-r><c-r>|
+        x_<c-r><c-r> ......................... |x_<c-r><c-r>|
+        s_<c-r><c-r> ......................... |s_<c-r><c-r>|
+        n_<c-r><c-s> ......................... |n_<c-r><c-s>|
+        n_<c-r><c-e> ......................... |n_<c-r><c-e>|
+        <c-r>1 ............................... |<c-r>1|
+        g:rer#quicklist ...................... |g:rer#quicklist|
+        g:rer#client_name .................... |g:rer#client_name|
+        g:rer#mapleader ...................... |g:rer#mapleader|
+        g:rer#support_maps ................... |g:rer#support_maps|
+        g:rer#map_eval ....................... |g:rer#map_eval|
+        g:rer#map_eval_and_print ............. |g:rer#map_eval_and_print|
+        g:rer#convert_path ................... |g:rer#convert_path|
+        g:rer#highlight_debug ................ |g:rer#highlight_debug|
+        g:rer#highlight_breakpoint ........... |g:rer#highlight_breakpoint|
+        g:rer#repl ........................... |g:rer#repl|
+        g:rer#repl_args ...................... |g:rer#repl_args|
+        g:rer#save ........................... |g:rer#save|
+        g:rer#r_options ...................... |g:rer#r_options|
+        g:rer#handlers ....................... |g:rer#handlers|
+        g:rer#tags_patterns .................. |g:rer#tags_patterns|
+        g:rer#tags_cmd ....................... |g:rer#tags_cmd|
+        rer#Keyword .......................... |rer#Keyword()|
+        rer#Inspect .......................... |rer#Inspect()|
+        rer#CommandComplete .................. |rer#CommandComplete()|
+        rer#Completions ...................... |rer#Completions()|
+        rer#FunctionArgs ..................... |rer#FunctionArgs()|
+        rer#R_setwd .......................... |rer#R_setwd()|
+        rer#Cd ............................... |rer#Cd()|
+        rer#RVal ............................. |rer#RVal()|
+        rer#RDict ............................ |rer#RDict()|
+        rer#SourceBuffer ..................... |rer#SourceBuffer()|
+        rer#Debug ............................ |rer#Debug()|
+        rer#Undebug .......................... |rer#Undebug()|
+        rer#GetBreakpointsAsQFL .............. |rer#GetBreakpointsAsQFL()|
+        rer#SetBreakpoint .................... |rer#SetBreakpoint()|
+        rer#ResetBreakpoints ................. |rer#ResetBreakpoints()|
+        rer#SendR ............................ |rer#SendR()|
+        rer#Quicklist ........................ |rer#Quicklist()|
+        rer#EditItem ......................... |rer#EditItem()|
+        rer#Tags ............................. |rer#Tags()|
+        rer#GetClient ........................ |rer#GetClient()|
+        rer#Send ............................. |rer#Send()|
+        g:rescreen#repl#rer#shell ............ |g:rescreen#repl#rer#shell|
         prototype.ExitRepl
         prototype.WrapResultPrinter
         prototype.SetTempFile
         prototype.WrapResultWriter
-        rescreen#repl#rer#Extend ......... |rescreen#repl#rer#Extend()|
+        rescreen#repl#rer#Extend ............. |rescreen#repl#rer#Extend()|
+        prototype.Init
+        prototype.Send
+        prototype.Filename
+        prototype.EvaluateInSession
+        rer#client#rescreen#GetPrototype ..... |rer#client#rescreen#GetPrototype()|
+        rer#client#rescreen#Ftplugin ......... |rer#client#rescreen#Ftplugin()|
+        prototype.Init
+        prototype.Send
+        prototype.EvaluateInSession
+        rer#client#rserve#GetPrototype ....... |rer#client#rserve#GetPrototype()|
+        rer#client#rserve#Ftplugin ........... |rer#client#rserve#Ftplugin()|
+        tinykeymap#rdebug#Send ............... |tinykeymap#rdebug#Send()|
+        tinykeymap#rdebug#Input .............. |tinykeymap#rdebug#Input()|
+        tinykeymap#rdebug#UnkownKey .......... |tinykeymap#rdebug#UnkownKey()|
 
 
 ========================================================================
@@ -124,6 +162,9 @@ n_<LocalLeader>K ... :call rer#Inspect()<cr>
 :Rdebug [FUNCTION]
     Debug or undebug FUNCTION.
 
+                                                    *:Rdebugger*
+:Rdebugger
+
                                                     *:RBreakpoint*
 RBreakpoint [FILENAME]
     List and remove breakpoints.
@@ -132,15 +173,54 @@ RBreakpoint [FILENAME]
                                                     *:RResetBreakpoints*
 :RResetBreakpoints
 
+                                                    *:Rtags*
+:Rtags
+
+                                                    *n_<c-r><c-r>*
+n_<c-r><c-r> ... :call rer#Send(getline("."))<cr>
+
+                                                    *i_<c-r><c-r>*
+i_<c-r><c-r> ... <c-\><c-o><c-r><c-r>
+
+                                                    *x_<c-r><c-r>*
+x_<c-r><c-r> ... :call rer#Send(join(tlib#selection#GetSelection("v"), "\n"))<cr>
+
+                                                    *s_<c-r><c-r>*
+s_<c-r><c-r> ... <c-o><c-r><c-r>
+
+                                                    *n_<c-r><c-s>*
+n_<c-r><c-s> ... :Rsource<cr>
+
+                                                    *n_<c-r><c-e>*
+n_<c-r><c-e> ... vip<c-r><c-r>
+
+                                                    *<c-r>1*
+<c-r>1 ... K
+
 
 ========================================================================
 autoload/rer.vim~
 
                                                     *g:rer#quicklist*
-g:rer#quicklist                (default: ['??"%s"', 'str(%s)', 'edit(%s)', 'debugger()', 'traceback()'])
+g:rer#quicklist                (default: ['??"%s"', 'str(%s)', 'summary(%s)', 'head(%s)', 'edit(%s)', 'fix(%s)', 'debugger()', 'traceback()', 'install.packages("%s")', 'update.packages()', 'example("%s")', 'graphics.off()'])
+
+                                                    *g:rer#client_name*
+g:rer#client_name              (default: 'rescreen')
+    The name of the client that talks to R.
+
+    Currently supported values:
+      rescreen ... Use the rescreen_vim VIM plugin
 
                                                     *g:rer#mapleader*
-g:rer#mapleader                (default: g:rescreen#mapleader)
+g:rer#mapleader                (default: '<LocalLeader>r')
+
+                                                    *g:rer#support_maps*
+g:rer#support_maps             (default: ['statet'])
+    A list of map names. Enable maps similar to:
+    - statet
+
+                                                    *g:rer#map_eval*
+g:rer#map_eval                 (default: '<c-cr>')
 
                                                     *g:rer#map_eval_and_print*
 g:rer#map_eval_and_print       (default: '<c-s-cr>')
@@ -155,9 +235,6 @@ g:rer#highlight_debug          (default: 'SpellRare')
                                                     *g:rer#highlight_breakpoint*
 g:rer#highlight_breakpoint     (default: 'SpellBad')
     Highlight group for breakpoint
-
-                                                    *g:rer#shell*
-g:rer#shell                    (default: g:rescreen#shell)
 
                                                     *g:rer#repl*
 g:rer#repl                     (default: executable('Rterm') ? 'Rterm --ess' : 'R')
@@ -178,6 +255,15 @@ g:rer#r_options                (default: '')
     Example:>
 
       let g:rer#r_options = 'warn = 1'.(has('gui_running') ? ', help_type = "html"' : '')
+
+                                                    *g:rer#handlers*
+g:rer#handlers                 (default: [{'key': 5, 'agent': 'rer#EditItem', 'key_name': '<c-e>', 'help': 'Edit item'}])
+
+                                                    *g:rer#tags_patterns*
+g:rer#tags_patterns            (default: '*.R */*.R')
+
+                                                    *g:rer#tags_cmd*
+g:rer#tags_cmd                 (default: (has('win32') || has('win64') ? 'ctags.exe' : 'ctags') .' -R '. g:rer#tags_patterns)
 
                                                     *rer#Keyword()*
 rer#Keyword(?word = "", ?help_type = "")
@@ -200,7 +286,7 @@ rer#Completions(base, ...)
 rer#FunctionArgs(word)
 
                                                     *rer#R_setwd()*
-rer#R_setwd(dict)
+rer#R_setwd(client)
 
                                                     *rer#Cd()*
 rer#Cd()
@@ -240,9 +326,24 @@ rer#SendR(word)
                                                     *rer#Quicklist()*
 rer#Quicklist(word)
 
+                                                    *rer#EditItem()*
+rer#EditItem(world, items)
+
+                                                    *rer#Tags()*
+rer#Tags()
+
+                                                    *rer#GetClient()*
+rer#GetClient()
+
+                                                    *rer#Send()*
+rer#Send(code, ...)
+
 
 ========================================================================
 autoload/rescreen/repl/rer.vim~
+
+                                                    *g:rescreen#repl#rer#shell*
+g:rescreen#repl#rer#shell      (default: g:rescreen#shell)
 
 prototype.ExitRepl
 
@@ -254,6 +355,53 @@ prototype.WrapResultWriter
 
                                                     *rescreen#repl#rer#Extend()*
 rescreen#repl#rer#Extend(dict)
+
+
+========================================================================
+autoload/rer/client/rescreen.vim~
+
+prototype.Init
+
+prototype.Send
+
+prototype.Filename
+
+prototype.EvaluateInSession
+
+                                                    *rer#client#rescreen#GetPrototype()*
+rer#client#rescreen#GetPrototype()
+
+                                                    *rer#client#rescreen#Ftplugin()*
+rer#client#rescreen#Ftplugin()
+
+
+========================================================================
+autoload/rer/client/rserve.vim~
+
+prototype.Init
+
+prototype.Send
+
+prototype.EvaluateInSession
+
+                                                    *rer#client#rserve#GetPrototype()*
+rer#client#rserve#GetPrototype()
+
+                                                    *rer#client#rserve#Ftplugin()*
+rer#client#rserve#Ftplugin()
+
+
+========================================================================
+autoload/tinykeymap/rdebug.vim~
+
+                                                    *tinykeymap#rdebug#Send()*
+tinykeymap#rdebug#Send(string)
+
+                                                    *tinykeymap#rdebug#Input()*
+tinykeymap#rdebug#Input(string)
+
+                                                    *tinykeymap#rdebug#UnkownKey()*
+tinykeymap#rdebug#UnkownKey(chars, count)
 
 
 

@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    122
+" @Revision:    123
 
 if exists('b:did_rer')
     finish
@@ -62,7 +62,7 @@ if !empty(g:rer#map_eval)
 
     exec 'nnoremap <buffer>' g:rer#map_eval ':call rer#Send(getline("."))<cr>+'
     exec 'inoremap <buffer>' g:rer#map_eval '<c-\><c-o>:call rer#Send(getline("."))<cr>'
-    exec 'vnoremap <buffer>' g:rer#map_eval ':call rer#Send(tlib#selection#GetSelection("v"))<cr>'
+    exec 'vnoremap <buffer>' g:rer#map_eval ':call rer#Send(getline("."))<cr>'
 
 endif
 

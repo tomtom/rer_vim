@@ -3,22 +3,24 @@
 
 Features:
 
-    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>, gx operator)
+    - Send code to R via |rescreen.txt| (<C-CR>, <C-S-CR>)
+        - If |g:rer#client_name| is 'rescreen', gx is defined as 
+          operator too.
     - 'omnifunc' completion (|i_CTRL-X_CTRL-O|; works also for function 
       arguments)
     - Use |K| to display informatin on an identifier
-    - Source the current buffer (nmap: gxrs)
-    - Debug/Undebug a function (n/vmap: gxrd)
-    - Display function arguments (n/vmap: gxrf)
-    - Show a summary for the word under cursor (nmap: gxrm)
-    - Show examples for the word under cursor (nmap: gxre)
-    - Run an R function on the word under cursor (nmap: gxrr)
-    - Experimental: Set/unset breakpoints (nmap: gxrb)
+    - Source the current buffer (nmap: <LocalLeader>rs)
+    - Debug/Undebug a function (n/vmap: <LocalLeader>rd)
+    - Display function arguments (n/vmap: <LocalLeader>rf)
+    - Show a summary for the word under cursor (nmap: <LocalLeader>rm)
+    - Show examples for the word under cursor (nmap: <LocalLeader>re)
+    - Run an R function on the word under cursor (nmap: <LocalLeader>rr)
+    - Experimental: Set/unset breakpoints (nmap: <LocalLeader>rb)
     - |:Rer| command to send code to R
     - |:Rcd| command to set R working directory to the current buffer 
-      (nmap: gxrcd)
+      (nmap: <LocalLeader>rcd)
 
-The map prefix (gx) is user-configurable via |g:rer#mapleader|.
+The map prefix (<LocalLeader>r) is user-configurable via |g:rer#mapleader|.
 
 This plugin was tested on Linux (Ubuntu) & Windows. On Windows, this plugin 
 assumes the use of the native Windows version of R (or rather Rterm) and of 
@@ -28,19 +30,22 @@ the Cygwin port of the screen utility.
 -----------------------------------------------------------------------
 Install~
 
-Edit the vba file and type: >
+To install the vimball, edit the vba file and type: >
 
     :so %%
 
-See :help vimball for details. If you have difficulties or use vim 7.0, 
-please make sure, you have the current version of vimball (vimscript 
-#1502) installed or update your runtime.
+See `:help vimball` for details.
 
-This plugin requires the rescreen vim plugin to be installed 
-(https://github.com/tomtom/rescreen_vim).
+To install from github, please use a plugin manager like enable_vim, pathogen, 
+VAM, Vundle, NeoBundle, vim-plug, vim-unbundle etc.
 
-Certain functions make use of the tlib vim plugin (vimscript #1863) if 
-available.
+Dependencies:
+    - This script requires tlib_vim (vimscript #1863) to be installed 
+      (https://github.com/tomtom/tlib_vim).
+    - If |g:rer#client_name| is 'rescreen', the rescreen_vim plugin is 
+      required too (https://github.com/tomtom/rescreen_vim).
+
+Also available on https://github.com/tomtom/rer_vim
 
 
 %s
